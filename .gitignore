@@ -5,14 +5,22 @@
 
 # ignore all db files
 *.db
+*.dll
+*.json
+*.exe
+*.user
+*.sln
 
 #ignore truthfulls ui build
 /truthfulls.com/truthfulls-ui
 /truthfulls.com/bin
-/truthfulls.com/.vs
+.vs
+/TruthfullsTests/obj
+/TruthfullsTests/bin
 /truthfulls.com/obj
 /truthfulls.com/Properties
 *.user
 /truthfulls.com/.config
+truthfulls.com/migrations
 
 

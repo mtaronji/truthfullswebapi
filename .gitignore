@@ -1,0 +1,18 @@
+#ignore all files without an extension
+*
+!*/
+!*.*
+
+# ignore all db files
+*.db
+
+#ignore truthfulls ui build
+/truthfulls.com/truthfulls-ui
+/truthfulls.com/bin
+/truthfulls.com/.vs
+/truthfulls.com/obj
+/truthfulls.com/Properties
+*.user
+/truthfulls.com/.config
+
+

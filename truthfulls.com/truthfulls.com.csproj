@@ -48,7 +48,17 @@
     <None Update="Data\develop.db">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\truthfullsProd.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+	<ItemGroup>
+		<Content Include="truthfulls-ui\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
 </Project>

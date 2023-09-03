@@ -30,7 +30,7 @@ namespace TruthfullsTests
         [Test]
         public async Task RetreivingExistingStockDataShouldReturnNotNull()
         {
-            List<Price>? prices = await this._stockdataservice.TryGetPriceDataAsync("SPY", "2010-01-01", "2020-10-10",TimePeriod.Daily);
+            List<Price>? prices = await this._stockdataservice.TryGetPriceDataAsync("AMD", "2010-01-01", "2020-10-10",TimePeriod.Daily);
             Assert.That(prices != null);
         }
         [Test]
@@ -42,7 +42,7 @@ namespace TruthfullsTests
         [Test]
         public async Task RetreivingStockDatesOutOfRangeShouldReturnNull()
         {
-            List<Price>? prices = await this._stockdataservice.TryGetPriceDataAsync("SPY", "1000-01-01", "1500-03-14", TimePeriod.Daily);
+            List<Price>? prices = await this._stockdataservice.TryGetPriceDataAsync("AMD", "1000-01-01", "1500-03-14", TimePeriod.Daily);
             Assert.That(prices == null);
         }
        

@@ -24,10 +24,9 @@ steps:
   inputs:
     version: '6.x'
     packageType: sdk
+
 - script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+  displayName: 'Build App'
 
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
+- script: dotnet test --configuration Release --no-build
+  displayName: "Running the Web API Tests"

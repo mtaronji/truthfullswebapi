@@ -28,7 +28,7 @@ steps:
 # Copy files from a source folder to a target folder using patterns matching file paths (not folder paths).
 - task: CopyFiles@2
   inputs:
-    SourceFolder: $(Agent.RootDirectory)/*.db
+    SourceFolder: $(Agent.RootDirectory)/unittest.db
     Contents: '**' # string. Required. Contents. Default: **.
     TargetFolder: $(Pipeline.Workspace)/s/TruthfullsTests
   displayName: "Copying unit test db to the pipeline."

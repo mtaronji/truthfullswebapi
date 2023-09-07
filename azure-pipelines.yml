@@ -29,7 +29,7 @@ steps:
 - task: CopyFiles@2
   inputs:
     SourceFolder: $(Agent.RootDirectory)/unittest.db
-    Contents: '**' # string. Required. Contents. Default: **.
+    Contents: **.db
     TargetFolder: $(Pipeline.Workspace)/s/TruthfullsTests
   displayName: "Copying unit test db to the pipeline."
 

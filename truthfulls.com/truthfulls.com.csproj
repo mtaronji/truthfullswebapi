@@ -55,10 +55,10 @@
     </None>
   </ItemGroup>
 
-	<ItemGroup>
+	<!--<ItemGroup>
 		<Content Include="truthfulls-ui\**">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-	</ItemGroup>
+	</ItemGroup>-->
 
 </Project>

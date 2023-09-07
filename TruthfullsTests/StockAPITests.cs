@@ -20,14 +20,14 @@ namespace TruthfullsTests
         [Test]
         public async Task RetreivingPricesOfNonExistentTickerShouldReturn404ResponseAndANullObject()
         {
-            var result = await this._stockcontroller.TryGetDailyPricesAsync("");
+            var result = await this._stockcontroller.TryGetDailyPricesAsync("0=SPYBOOGIE&datebegin=2022-09-07&dateend=2023-09-07");
             Assert.That(this._stockcontroller.Response.StatusCode == 404);
             Assert.That(result.Value, Is.Null);
         }
         [Test]
         public async Task RetreivingPricesOfRealTickerWithCorrectRangeShouldReturn200ResponseAndANonNullObject()
         {
-            var result = await this._stockcontroller.TryGetDailyPricesAsync("");
+            var result = await this._stockcontroller.TryGetDailyPricesAsync("0=SPY&datebegin=2022-09-07&dateend=2023-09-07");
             Assert.That(this._stockcontroller.Response.StatusCode == 200);
             Assert.That(result.Value, Is.Not.Null);
         }
@@ -35,7 +35,7 @@ namespace TruthfullsTests
         [Test]
         public async Task RetreivingPricesOfRealTickerWithIncorrectRangeShouldReturn404ResponseAndANullObject()
         {
-            var result = await this._stockcontroller.TryGetDailyPricesAsync("");
+            var result = await this._stockcontroller.TryGetDailyPricesAsync("0=SPY&datebegin=1500-09-07&dateend=1600-09-07");
             Assert.That(this._stockcontroller.Response.StatusCode == 404);
             Assert.That(result.Value, Is.Null);
         }

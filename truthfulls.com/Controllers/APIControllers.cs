@@ -26,11 +26,25 @@ namespace truthfulls.com.Controllers
             TimePeriod period = TimePeriod.Daily;
             var q = querystring;
             var dict = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(q);
-            var datebegin = dict["datebegin"].ToString(); dict.Remove("datebegin");
-            var dateend = dict["dateend"].ToString(); dict.Remove("dateend");
-            var Selectedtickers = dict.Values.Select(x => x.ToString()).ToArray();
+            string datebegin; string dateend;
+            string[] Selectedtickers = { };
+            Dictionary<string, List<PriceVM>>? allprices = new();
 
-            Dictionary<string,List<PriceVM>>? allprices = new();
+            try
+            {
+                datebegin = dict["datebegin"].ToString(); dict.Remove("datebegin");
+                dateend = dict["dateend"].ToString(); dict.Remove("dateend");
+                Selectedtickers = dict.Values.Select(x => x.ToString()).ToArray();
+            }
+            catch (KeyNotFoundException e)
+            {
+                //log exception here
+                Console.WriteLine(e.Message);
+                allprices = null; Response.StatusCode = 404;
+                return allprices;
+
+            }
+
             foreach(var ticker in Selectedtickers)
             {
                 var prices = await this.dataRetrievalService.TryGetPriceDataAsync(ticker, datebegin, dateend, period);

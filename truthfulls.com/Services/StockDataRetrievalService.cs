@@ -46,7 +46,7 @@ namespace truthfulls.com.Services
 
                 if(!this._Cache.TryGetValue(ticker, out Prices))
                 {
-                    Prices = await TryGetPriceDataAsync(ticker, datebegin, dateend, period);
+                    Prices = await TryQueryPriceDataAsync(ticker, datebegin, dateend, period);
 
                     var cacheExpiryOptions = new MemoryCacheEntryOptions
                     {

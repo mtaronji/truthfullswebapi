@@ -29,12 +29,11 @@ steps:
 - task: CopyFiles@2
   inputs:
     SourceFolder: $(Agent.RootDirectory)/unittest.db
-    Contents: **.db
+    Contents: |
+             *.db
     TargetFolder: $(Pipeline.Workspace)/s/TruthfullsTests
   displayName: "Copying unit test db to the pipeline."
-
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'Build App'
-
 - script: dotnet test --configuration Release --no-build
   displayName: "Running the Web API Tests"

@@ -65,11 +65,7 @@ stages:
         zipAfterPublish: True
       displayName: "creating a publish and zipping it for Artifact creation"
     # this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(Build.ArtifactStagingDirectory)' 
-        artifactName: 'webapipublish'
-      displayName: "Creating webapi Artifact"
+
     - task: NodeTool@0
       inputs:
         versionSpec: 18.10.x
@@ -91,6 +87,12 @@ stages:
         includeRootFolder: true
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/truthfullsui.zip
+        
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)' 
+        artifactName: 'webapipublish'
+      displayName: "Creating webapi Artifact"
 
         
 

@@ -32,15 +32,15 @@ stages:
     - task: NuGetToolInstaller@1
       displayName: "Install Nuget"
       
-    - script: |
-              cd $(Pipeline.Workspace)/s/truthfulls.com
     - task: UseDotNet@2 
       displayName: ".Install NET Core 6.x"
       inputs:
         version: '6.x'
         packageType: sdk
 
-    - script: dotnet build --configuration $(buildConfiguration)
+    - script: |
+              cd $(Pipeline.Workspace)/s/truthfulls.com
+              dotnet build --configuration $(buildConfiguration)
       displayName: 'Build App'
       
     - task: DotNetCoreCLI@2

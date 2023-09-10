@@ -87,7 +87,7 @@ stages:
       displayName: "running tests on UI"
     - task: ArchiveFiles@2
       inputs:
-        rootFolderOrFile: $(System.DefaultWorkingDirectory)/truthfullsUI/dist
+        rootFolderOrFile: $(System.DefaultWorkingDirectory)/truthfullsUI/dist/truthfulls-ui
         includeRootFolder: true
         archiveType: zip
         

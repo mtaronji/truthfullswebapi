@@ -85,6 +85,13 @@ stages:
               cd $(System.DefaultWorkingDirectory)/truthfullsUI
               ng test TruthfullsUI --code-coverage --karma-config karma.conf.ci.js 
       displayName: "running tests on UI"
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: $(System.DefaultWorkingDirectory)/truthfullsUI/dist
+        includeRootFolder: true
+        archiveType: zip
+        
+
 
 
 # - stage: TestStage

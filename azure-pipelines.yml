@@ -25,7 +25,8 @@ stages:
 
 - stage: BuildStage
   jobs:
-  - job: BuildWebAPI
+  - job: Build
+    displayName: "Building the front end and the backend"
     steps:
     - checkout: self
     - checkout: UI
@@ -57,8 +58,6 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)' 
         artifactName: 'webapipublish'
       displayName: "Creating webapi Artifact"
-  - job: BuildUI
-    steps:
     - task: NodeTool@0
       inputs:
         versionSpec: 18.10.x
@@ -70,7 +69,6 @@ stages:
               ng build
       displayName: "Installing npm, angular and building the UI"
 
- 
 
 # - stage: TestStage
 #   jobs:

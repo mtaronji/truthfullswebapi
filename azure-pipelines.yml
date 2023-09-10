@@ -45,6 +45,8 @@ stages:
               dotnet build --configuration $(buildConfiguration)
       displayName: 'Build App'
     - script: |
+               echo $(System.DefaultWorkingDirectory)
+               cd $(System.DefaultWorkingDirectory)/truthfullswebapi
                dotnet test
       displayName: 'Testing WEB API'
       

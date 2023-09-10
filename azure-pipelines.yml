@@ -49,7 +49,7 @@ stages:
         SourceFolder: $(Agent.RootDirectory)/testdata
         Contents: |
                 *.db
-        TargetFolder: $(System.DefaultWorkingDirectory)/TruthfullsTests
+        TargetFolder: $(System.DefaultWorkingDirectory)/truthfullswebapi/TruthfullsTests
       displayName: "Copying unit test db to the pipeline to run tests"
     - script: |
                echo $(System.DefaultWorkingDirectory)

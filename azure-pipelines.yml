@@ -40,7 +40,7 @@ stages:
 
     - script: |
               echo $(System.DefaultWorkingDirectory)
-              cd $(System.DefaultWorkingDirectory)/s/truthfullswebapi
+              cd $(System.DefaultWorkingDirectory)/truthfullswebapi
               dotnet build --configuration $(buildConfiguration)
       displayName: 'Build App'
       
@@ -64,7 +64,7 @@ stages:
         versionSpec: 18.10.x
       displayName: "Install node 18.10.x"
     - script: |
-              cd $(System.DefaultWorkingDirectory)/s/truthfullsUI
+              cd $(System.DefaultWorkingDirectory)/truthfullsUI
               npm ci 
               npm install -g @angular/cli
               ng build

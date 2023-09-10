@@ -9,31 +9,66 @@ trigger:
 pool:
   name: truthfullspool
 
+resources:
+  repositories:
+  - repository:  ui
+    type: github
+    endpoint: mtaronji
+    name: mtaronji/truthfullsUI
 
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-steps:
-- task: NuGetToolInstaller@1
-  displayName: "Install Nuget"
+stages:
+
+- stage: BuildStage
+  jobs:
+  - job: BuildWebAPI
+    steps:
+    - checkout: self
+    - checkout: UI
+    - task: NuGetToolInstaller@1
+      displayName: "Install Nuget"  
+    - task: UseDotNet@2 
+      displayName: ".Install NET Core 6.x"
+      inputs:
+        version: '6.x'
+        packageType: sdk
+
+    - script: dotnet build --configuration $(buildConfiguration)
+      displayName: 'Build App'
+      
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        publishWebProjects: True
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        zipAfterPublish: True
+    # this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)' 
+        artifactName: 'truthfullpublish'
+
+
+- stage: TestStage
+  jobs:
+  - job: TestWebAPI
+    displayName: "Testing WebAPI"
+    steps:
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: $(Agent.RootDirectory)/testdata
+        Contents: |
+                *.db
+        TargetFolder: $(Pipeline.Workspace)/s/TruthfullsTests
+      displayName: "Copying unit test db to the pipeline to run tests"
+
+    - script: dotnet test --configuration Release --no-build
+      displayName: "Running the Web API Tests"
+
+
+
   
-- task: UseDotNet@2 
-  displayName: ".NET Core 6.x"
-  inputs:
-    version: '6.x'
-    packageType: sdk
-    
-# Copy files from a source folder to a target folder using patterns matching file paths (not folder paths).
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: $(Agent.RootDirectory)/testdata
-    Contents: |
-             *.db
-    TargetFolder: $(Pipeline.Workspace)/s/TruthfullsTests
-  displayName: "Copying unit test db to the pipeline."
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'Build App'
-- script: dotnet test --configuration Release --no-build
-  displayName: "Running the Web API Tests"

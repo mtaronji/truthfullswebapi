@@ -93,27 +93,6 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)' 
         artifactName: 'webapipublish'
       displayName: "Creating webapi Artifact"
-- stage: Release
-  condition: dependson(BuildStage)
-
-
-
-# - stage: TestStage
-#   jobs:
-#   - job: TestWebAPI
-#     displayName: "Testing WebAPI"
-#     steps:
-#     - task: CopyFiles@2
-#       inputs:
-#         SourceFolder: $(Agent.RootDirectory)/testdata
-#         Contents: |
-#                 *.db
-#         TargetFolder: $(Pipeline.Workspace)/s/TruthfullsTests
-#       displayName: "Copying unit test db to the pipeline to run tests"
-
-#     - script: dotnet test --configuration Release --no-build
-#       displayName: "Running the Web API Tests"
-
 
 
   

@@ -81,6 +81,13 @@ stages:
               cd $(System.DefaultWorkingDirectory)/truthfullsUI
               ng test TruthfullsUI --code-coverage --karma-config karma.conf.ci.js 
       displayName: "running tests on UI"
+      
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: $(System.DefaultWorkingDirectory)/truthfullsUI/dist
+        TargetFolder: $(Build.ArtifactStagingDirectory)
+        
+      displayName: "Copying unit test db to the pipeline to run tests"
     - task: ArchiveFiles@2
       inputs:
         rootFolderOrFile: $(System.DefaultWorkingDirectory)/truthfullsUI/dist/truthfulls-ui
@@ -91,7 +98,7 @@ stages:
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)' 
-        artifactName: 'webapipublish'
+        artifactName: 'webapi'
       displayName: "Creating webapi Artifact"
 
 

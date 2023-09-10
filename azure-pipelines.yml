@@ -90,6 +90,7 @@ stages:
         rootFolderOrFile: $(System.DefaultWorkingDirectory)/truthfullsUI/dist/truthfulls-ui
         includeRootFolder: true
         archiveType: zip
+
         
 
 

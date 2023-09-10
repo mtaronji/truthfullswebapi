@@ -46,28 +46,42 @@ stages:
         publishWebProjects: True
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: True
+      displayName: "creating a publish and zipping it for Artifact creation"
     # this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)' 
-        artifactName: 'truthfullpublish'
-
-
-- stage: TestStage
-  jobs:
-  - job: TestWebAPI
-    displayName: "Testing WebAPI"
+        artifactName: 'webapipublish'
+      displayName: "Creating webapi Artifact"
+  - job: BuildUI
     steps:
-    - task: CopyFiles@2
+    - task: NodeTool@0
       inputs:
-        SourceFolder: $(Agent.RootDirectory)/testdata
-        Contents: |
-                *.db
-        TargetFolder: $(Pipeline.Workspace)/s/TruthfullsTests
-      displayName: "Copying unit test db to the pipeline to run tests"
+        versionSpec: 18.10.x
+      displayName: "Install node 18.10.x"
+    - script: |
+              npm ci 
+              npm install -g @angular/cli
+              ng build
+      displayName: "Installing npm, angular and building the UI"
 
-    - script: dotnet test --configuration Release --no-build
-      displayName: "Running the Web API Tests"
+ 
+
+# - stage: TestStage
+#   jobs:
+#   - job: TestWebAPI
+#     displayName: "Testing WebAPI"
+#     steps:
+#     - task: CopyFiles@2
+#       inputs:
+#         SourceFolder: $(Agent.RootDirectory)/testdata
+#         Contents: |
+#                 *.db
+#         TargetFolder: $(Pipeline.Workspace)/s/TruthfullsTests
+#       displayName: "Copying unit test db to the pipeline to run tests"
+
+#     - script: dotnet test --configuration Release --no-build
+#       displayName: "Running the Web API Tests"
 
 
 

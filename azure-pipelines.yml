@@ -74,6 +74,8 @@ stages:
               ng build
       displayName: "Installing npm, angular and building the UI"
     - script: |
+              echo $(System.DefaultWorkingDirectory)
+              cd $(System.DefaultWorkingDirectory)/truthfullsUI
               ng test TruthfullsUI --code-coverage --karma-config karma.conf.ci.js 
       displayName: "running tests on UI"
 

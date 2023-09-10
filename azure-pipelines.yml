@@ -93,8 +93,8 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)' 
         artifactName: 'webapipublish'
       displayName: "Creating webapi Artifact"
-
-        
+- stage: Release
+  condition: dependson(BuildStage)
 
 
 

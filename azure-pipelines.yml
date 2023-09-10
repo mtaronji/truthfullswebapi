@@ -13,7 +13,6 @@ resources:
   repositories:
   - repository:  ui
     type: github
-    endpoint: mtaronji
     name: mtaronji/truthfullsUI
 
 variables:

@@ -39,7 +39,8 @@ stages:
         packageType: sdk
 
     - script: |
-              cd $(Pipeline.Workspace)/s/truthfulls.com
+              echo $(Pipeline.Workspace)
+              cd $(Pipeline.Workspace)/s/truthfullswebapi
               dotnet build --configuration $(buildConfiguration)
       displayName: 'Build App'
       

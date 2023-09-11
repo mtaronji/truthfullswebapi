@@ -63,8 +63,7 @@ stages:
         publishWebProjects: True
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: false
-      displayName: "creating a publish and zipping it for Artifact creation"
-    # this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
+      displayName: "Publishing webapi to artifact staging"
 
     - task: NodeTool@0
       inputs:
@@ -85,20 +84,25 @@ stages:
     - task: CopyFiles@2
       inputs:
         SourceFolder: $(System.DefaultWorkingDirectory)/truthfullsUI/dist
-        TargetFolder: $(Build.ArtifactStagingDirectory)
-        
-      displayName: "Copying unit test db to the pipeline to run tests"
+        TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com
+      displayName: "Copying Angular build to Artifact staging directory"
+      
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: $(Agent.RootDirectory)/Data
+        TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com/Data
+      displayName: "Copying Angular build to Artifact staging directory"
     - task: ArchiveFiles@2
       inputs:
-        rootFolderOrFile: $(System.DefaultWorkingDirectory)/truthfullsUI/dist/truthfulls-ui
-        includeRootFolder: true
+        rootFolderOrFile: $(Build.ArtifactStagingDirectory)
+        includeRootFolder: false
         archiveType: zip
-        archiveFile: $(Build.ArtifactStagingDirectory)/truthfullsui.zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/truthfulls.zip
         
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)' 
-        artifactName: 'webapi'
+        artifactName: 'truthfulls'
       displayName: "Creating webapi Artifact"
 
 

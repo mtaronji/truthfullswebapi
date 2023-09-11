@@ -98,7 +98,9 @@ stages:
         includeRootFolder: false
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/truthfulls.zip
-        
+    - script: |
+              rm -r -f $(Build.ArtifactStagingDirectory)/truthfulls.com
+      displayName: "Cleanup"
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)' 

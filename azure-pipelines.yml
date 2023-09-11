@@ -94,7 +94,7 @@ stages:
       displayName: "Copying Angular build to Artifact staging directory"
     - task: ArchiveFiles@2
       inputs:
-        rootFolderOrFile: $(Build.ArtifactStagingDirectory)
+        rootFolderOrFile: $(Build.ArtifactStagingDirectory)/truthfulls.com
         includeRootFolder: false
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/truthfulls.zip

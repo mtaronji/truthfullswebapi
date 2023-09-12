@@ -4,37 +4,108 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- main
+- dev
 
 pool:
   name: truthfullspool
 
+resources:
+  repositories:
+  - repository:  ui
+    type: github
+    endpoint: mtaronji
+    name: mtaronji/truthfullsUI
 
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
-steps:
-- task: NuGetToolInstaller@1
-  displayName: "Install Nuget"
+stages:
+
+- stage: BuildStage
+  jobs:
+  - job: Build
+    displayName: "Building the front end and the backend"
+    steps:
+    - checkout: self
+    - checkout: UI
+    - task: NuGetToolInstaller@1
+      displayName: "Install Nuget"
+      
+    - task: UseDotNet@2 
+      displayName: ".Install NET Core 6.x"
+      inputs:
+        version: '6.x'
+        packageType: sdk
+
+    - script: |
+              echo $(System.DefaultWorkingDirectory)
+              cd $(System.DefaultWorkingDirectory)/truthfullswebapi
+              dotnet build --configuration $(buildConfiguration)
+      displayName: 'Build App'
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: $(Agent.RootDirectory)/testdata
+        Contents: |
+                *.db
+        TargetFolder: $(System.DefaultWorkingDirectory)/truthfullswebapi/TruthfullsTests
+      displayName: "Copying unit test db to the pipeline to run tests"
+    - script: |
+               echo $(System.DefaultWorkingDirectory)
+               cd $(System.DefaultWorkingDirectory)/truthfullswebapi
+               dotnet test
+      displayName: 'Testing WEB API'
+      
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        publishWebProjects: True
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        zipAfterPublish: false
+      displayName: "Publishing webapi to artifact staging"
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: 18.10.x
+      displayName: "Install node 18.10.x"
+    - script: |
+              cd $(System.DefaultWorkingDirectory)/truthfullsUI
+              npm ci 
+              npm install -g @angular/cli
+              ng build
+      displayName: "Installing npm, angular and building the UI"
+    - script: |
+              echo $(System.DefaultWorkingDirectory)
+              cd $(System.DefaultWorkingDirectory)/truthfullsUI
+              ng test TruthfullsUI --code-coverage --karma-config karma.conf.ci.js 
+      displayName: "running tests on UI"
+      
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: $(System.DefaultWorkingDirectory)/truthfullsUI/dist
+        TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com
+      displayName: "Copying Angular build to Artifact staging directory"
+      
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: $(Agent.RootDirectory)/Data
+        TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com/Data
+      displayName: "Copying Angular build to Artifact staging directory"
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: $(Build.ArtifactStagingDirectory)/truthfulls.com
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/truthfulls.zip
+    - script: |
+              rm -r -f $(Build.ArtifactStagingDirectory)/truthfulls.com
+      displayName: "Cleanup"
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)' 
+        artifactName: 'truthfulls'
+      displayName: "Creating webapi Artifact"
+
+
   
-- task: UseDotNet@2 
-  displayName: ".NET Core 6.x"
-  inputs:
-    version: '6.x'
-    packageType: sdk
-    
-# Copy files from a source folder to a target folder using patterns matching file paths (not folder paths).
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: $(Agent.RootDirectory)/unittest.db
-    Contents: '**' # string. Required. Contents. Default: **.
-    TargetFolder: $(Pipeline.Workspace)/s/TruthfullsTests
-  displayName: "Copying unit test db to the pipeline."
-
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'Build App'
-
-- script: dotnet test --configuration Release --no-build
-  displayName: "Running the Web API Tests"

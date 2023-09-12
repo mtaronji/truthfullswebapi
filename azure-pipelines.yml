@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- dev
+- development
 
 pool:
   name: truthfullspool
@@ -26,7 +26,7 @@ stages:
 - stage: BuildStage
   jobs:
   - job: Build
-    displayName: "Building the front end and the backend"
+    displayName: "Test and Build"
     steps:
     - checkout: self
     - checkout: UI
@@ -64,6 +64,10 @@ stages:
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: false
       displayName: "Publishing webapi to artifact staging"
+    - script: |
+              cd $(Build.ArtifactStagingDirectory)/truthfulls.com
+              mkdir app_data
+      displayName: "Creating app_data directory"
 
     - task: NodeTool@0
       inputs:

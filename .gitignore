@@ -25,3 +25,5 @@ truthfulls.com/migrations
 
 
 /truthfulls.com/appsettings.json
+/truthfulls.com/appsettings.Production.json
+/truthfulls.com/appsettings.Development.json

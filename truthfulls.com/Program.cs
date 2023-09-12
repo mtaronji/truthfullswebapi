@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var lite = builder.Configuration.GetConnectionString("CUSTOMCONNSTR_default");
+var lite = builder.Configuration.GetConnectionString("default");
 builder.Services.AddSingleton<StockDataRetrievalService>();
 
 builder.Services.AddControllers().AddJsonOptions(

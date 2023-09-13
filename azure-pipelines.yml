@@ -96,12 +96,12 @@ stages:
         SourceFolder: $(Agent.RootDirectory)/Data
         TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com/Data
       displayName: "Copying SQL lite production DB"
-    # - task: ArchiveFiles@2
-    #   inputs:
-    #     rootFolderOrFile: $(Build.ArtifactStagingDirectory)/truthfulls.com
-    #     includeRootFolder: false
-    #     archiveType: zip
-    #     archiveFile: $(Build.ArtifactStagingDirectory)/truthfulls.zip
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: $(Build.ArtifactStagingDirectory)/truthfulls.com
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/truthfulls.zip
     - script: |
               rm -r -f $(Build.ArtifactStagingDirectory)/truthfulls.com
       displayName: "Cleanup"

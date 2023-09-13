@@ -95,7 +95,7 @@ stages:
       inputs:
         SourceFolder: $(Agent.RootDirectory)/Data
         TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com/Data
-      displayName: "Copying Angular build to Artifact staging directory"
+      displayName: "Copying SQLlite production DB"
     # - task: ArchiveFiles@2
     #   inputs:
     #     rootFolderOrFile: $(Build.ArtifactStagingDirectory)/truthfulls.com

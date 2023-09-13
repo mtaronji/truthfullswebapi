@@ -12,9 +12,9 @@ using truthfulls.com.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//check connection string for config error
 
-var lite = builder.Configuration.GetConnectionString("CUSTOMCONNSTR_default");
+
 builder.Services.AddSingleton<StockDataRetrievalService>();
 
 builder.Services.AddControllers().AddJsonOptions(

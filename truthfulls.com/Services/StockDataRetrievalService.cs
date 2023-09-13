@@ -24,7 +24,7 @@ namespace truthfulls.com.Services
             this.AllTickerNamesCache = "Tickers";
             this.Builder = new();
 
-            this.Builder.ConnectionString = config.GetConnectionString("default");
+            this.Builder.ConnectionString = config.GetConnectionString("CUSTOMCONNSTR_default");
         }
 
         //for testing

@@ -23,10 +23,8 @@ namespace truthfulls.com.Services
             this.CachedTickers = new List<string>() { };
             this.AllTickerNamesCache = "Tickers";
             this.Builder = new();
-            string? con = Environment.GetEnvironmentVariable("CUSTOMCONNSTR_default");
-            if(con == null) { throw new ArgumentNullException(nameof(con)); }
 
-            this.Builder.ConnectionString = con;
+            this.Builder.ConnectionString = config.GetConnectionString("default");
         }
 
         //for testing

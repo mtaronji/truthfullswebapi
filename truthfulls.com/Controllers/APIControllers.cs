@@ -12,6 +12,7 @@ namespace truthfulls.com.Controllers
     { 
 
         StockDataRetrievalService dataRetrievalService;
+        ILogger _logger;
         public StockController(StockDataRetrievalService dataRetrievalService)
         {
             this.dataRetrievalService = dataRetrievalService;
@@ -23,6 +24,7 @@ namespace truthfulls.com.Controllers
         [Produces("application/json")]
         public async Task<ActionResult<Dictionary<string, List<PriceVM>>?>> TryGetDailyPricesAsync(string querystring)
         {
+      
             TimePeriod period = TimePeriod.Daily;
             var q = querystring;
             var dict = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(q);

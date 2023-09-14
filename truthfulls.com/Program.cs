@@ -1,8 +1,4 @@
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.Text.Json.Serialization;
@@ -13,6 +9,7 @@ using truthfulls.com.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 //check connection string for config error
+
 
 
 builder.Services.AddSingleton<StockDataRetrievalService>();

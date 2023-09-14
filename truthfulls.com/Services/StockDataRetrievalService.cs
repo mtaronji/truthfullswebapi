@@ -23,8 +23,8 @@ namespace truthfulls.com.Services
             this.CachedTickers = new List<string>() { };
             this.AllTickerNamesCache = "Tickers";
             this.Builder = new();
-
-            this.Builder.ConnectionString = "Data Source = Data/truthfullsProd.db;";
+            var con = config.GetConnectionString("default");
+            this.Builder.ConnectionString = con;
         }
 
         //for testing

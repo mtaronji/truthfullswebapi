@@ -33,6 +33,7 @@ builder.Services.AddCors(options =>
 });
 
 ConfigurationManager configuration = builder.Configuration;
+configuration.AddJsonFile("appsettings.json");
 
 var app = builder.Build();
 

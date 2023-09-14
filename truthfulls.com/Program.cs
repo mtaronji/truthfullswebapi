@@ -32,8 +32,9 @@ builder.Services.AddCors(options =>
                       });
 });
 
-ConfigurationManager configuration = builder.Configuration;
-configuration.AddJsonFile("appsettings.json");
+builder.Configuration.AddJsonFile("appsettings.json");
+builder.Configuration.AddJsonFile("appsettings.Production.json");
+
 
 var app = builder.Build();
 

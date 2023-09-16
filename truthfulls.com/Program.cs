@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.Text.Json.Serialization;
+using truthfulls.com.Models.PlotlyModels;
 using truthfulls.com.Services;
 
 
@@ -34,6 +35,8 @@ builder.Services.AddCors(options =>
 //builder.Configuration.AddJsonFile($"appsettings.{env.EnvironmentName}.json");
 
 builder.Configuration.AddEnvironmentVariables();
+var con = builder.Configuration.GetConnectionString("stock");
+
 
 var app = builder.Build();
 

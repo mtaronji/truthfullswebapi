@@ -51,9 +51,6 @@
 		<CopyToPublishDirectory>Never</CopyToPublishDirectory>
 		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Data\truthfullsProd.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 	<!--<ItemGroup>

@@ -35,8 +35,6 @@ builder.Services.AddCors(options =>
 //builder.Configuration.AddJsonFile($"appsettings.{env.EnvironmentName}.json");
 
 builder.Configuration.AddEnvironmentVariables();
-var con = builder.Configuration.GetConnectionString("stock");
-
 
 var app = builder.Build();
 

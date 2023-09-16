@@ -30,6 +30,9 @@ builder.Services.AddCors(options =>
                       });
 });
 
+//IHostEnvironment env = builder.Environment;
+//builder.Configuration.AddJsonFile($"appsettings.{env.EnvironmentName}.json");
+builder.Configuration.AddEnvironmentVariables();
 
 var app = builder.Build();
 

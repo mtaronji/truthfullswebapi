@@ -10,8 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 //check connection string for config error
 
-
-
 builder.Services.AddSingleton<StockDataRetrievalService>();
 
 builder.Services.AddControllers().AddJsonOptions(
@@ -57,8 +55,6 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "truthfulls-ui")),
     RequestPath = ""
 });
-
-
 
 if (app.Environment.IsDevelopment())
 {

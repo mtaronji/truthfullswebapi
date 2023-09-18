@@ -44,7 +44,7 @@ stages:
               echo $(System.DefaultWorkingDirectory)
               cd $(System.DefaultWorkingDirectory)/truthfullswebapi
               dotnet build --configuration $(buildConfiguration)
-      displayName: 'Build App'
+      displayName: 'Build Web API'
     - task: CopyFiles@2
       inputs:
         SourceFolder: $(Agent.RootDirectory)/testdata

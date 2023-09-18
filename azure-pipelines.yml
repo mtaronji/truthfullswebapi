@@ -27,7 +27,7 @@ stages:
 - stage: BuildStage
   jobs:
   - job: Build
-    displayName: "Test and Build"
+    displayName: "Test and Build Truthfulls Web API"
     steps:
     - checkout: self
     - checkout: UI

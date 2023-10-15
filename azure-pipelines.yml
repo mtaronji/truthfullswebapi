@@ -27,7 +27,7 @@ stages:
 - stage: BuildStage
   jobs:
   - job: Build
-    displayName: "Test and Build"
+    displayName: "Test and Build Truthfulls Web API"
     steps:
     - checkout: self
     - checkout: UI
@@ -44,7 +44,7 @@ stages:
               echo $(System.DefaultWorkingDirectory)
               cd $(System.DefaultWorkingDirectory)/truthfullswebapi
               dotnet build --configuration $(buildConfiguration)
-      displayName: 'Build App'
+      displayName: 'Build Web API'
     - task: CopyFiles@2
       inputs:
         SourceFolder: $(Agent.RootDirectory)/testdata

@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 //check connection string for config error
 
 builder.Services.AddSingleton<StockDataRetrievalService>();
+builder.Services.AddSingleton<OptionRetrievalService>();
 
 builder.Services.AddControllers().AddJsonOptions(
     //don't send null values, ignore them

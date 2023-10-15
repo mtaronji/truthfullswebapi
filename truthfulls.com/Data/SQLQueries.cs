@@ -202,6 +202,28 @@ namespace truthfulls.com.Data
             ) n";
         }
 
+        public static string OptionPriceData(string optioncode)
+        {
+            return
+
+            $@"
+                select * from price
+                where optioncode = '{optioncode}'
+            
+             ";
+        }
+
+        public static string OptionCodes(string ticker)
+        {
+            return
+
+            $@"
+                select code from option
+                WHERE CODE GLOB '{ticker}[0-9]*'
+
+            ";
+        }
+
 
     }
 }

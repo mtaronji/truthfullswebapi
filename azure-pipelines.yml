@@ -17,7 +17,7 @@ resources:
     name: mtaronji/truthfullsUI
     ref: "refs/heads/dev"
   pipelines:
-  - pipeline: 08da7496-e188-4c1a-a6fe-20345ef99e96 
+  - pipeline: 9 
     source: mtaronji.truthfullsUI # Name of the pipeline that produces the artifact.
     branch: dev
     trigger: true 

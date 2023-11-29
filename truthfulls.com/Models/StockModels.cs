@@ -4,14 +4,16 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace truthfulls.com.Models
+namespace truthfulls.com.StockModels
 {
 
     [Table("Stock", Schema = "Stock")]
     public class Stock
     {
         [Key]
+        [Column(TypeName ="nvarchar(20)")]
         public string Ticker { get; set; } = null!;
+
         public string? CompanyName { get; set; }
 
         public string? Country { get; set; }
@@ -75,6 +77,7 @@ namespace truthfulls.com.Models
                 {
                     date = price.Date.ToString("yyyy-MM-dd"),
                     close = price.Close,
+                    adjclose = price.AdjClose,
                     high = price.High,
                     low = price.Low,
                     open = price.Open,
@@ -111,12 +114,4 @@ namespace truthfulls.com.Models
         public Int64 volume { get; set; }      
     }
 
-    
-    public enum TimePeriod
-    {
-        Daily = 1,
-        Weekly = 2,
-        Monthly = 3,
-        Quarterly = 4
-    }
 }

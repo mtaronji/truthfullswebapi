@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using truthfulls.com.StockModels;
+using truthfulls.com.Data;
 using truthfulls.com.Services;
-using truthfulls.com.Models;
-using System.Diagnostics;
 
 namespace truthfulls.com.Controllers
 {
@@ -11,74 +11,35 @@ namespace truthfulls.com.Controllers
     public class StockController : ControllerBase
     { 
 
-        StockDataRetrievalService dataRetrievalService;
-        ILogger _logger;
-        public StockController(StockDataRetrievalService dataRetrievalService)
+        
+        private MarketContext _marketContext;
+        private UtilityService _utility;
+        public StockController(MarketContext market, UtilityService Utility)
         {
-            this.dataRetrievalService = dataRetrievalService;
+            this._marketContext = market;
+            this._utility = Utility;
+          
         }
 
 
         [HttpGet]
-        [Route("[controller]/{querystring}/getdailyprices")]
+        [Route("[controller]/getdailyprices/{querystring}")]
         [Produces("application/json")]
-        public async Task<ActionResult<Dictionary<string, List<PriceVM>>?>> TryGetDailyPricesAsync(string querystring)
-        {
-      
-            TimePeriod period = TimePeriod.Daily;
-            var q = querystring;
-            var dict = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(q);
-            string datebegin; string dateend;
-            string[] Selectedtickers = { };
-            Dictionary<string, List<PriceVM>>? allprices = new();
+  
+        public async Task<ActionResult<Dictionary<string, List<PriceVM>>?>> TryGetDailyPricesAsync(string? querystring = null)
+        { 
+            var queryobject = this._utility.TryParseTickersDateRange(querystring); if (queryobject == null) { return BadRequest(); }
+            var allprices = await this._marketContext.TryGetDailyStockPricesAsync(queryobject); 
 
-            try
-            {
-                datebegin = dict["datebegin"].ToString(); dict.Remove("datebegin");
-                dateend = dict["dateend"].ToString(); dict.Remove("dateend");
-                Selectedtickers = dict.Values.Select(x => x.ToString()).ToArray();
-            }
-            catch (KeyNotFoundException e)
-            {
-                //log exception here
-                Console.WriteLine(e.Message);
-                allprices = null; Response.StatusCode = 404;
-                return allprices;
-
-            }
-
-            foreach(var ticker in Selectedtickers)
-            {
-                var prices = await this.dataRetrievalService.TryGetPriceDataAsync(ticker, datebegin, dateend, period);
-                if (prices == null) { Response.StatusCode = 404; allprices = null; return allprices; }
-                allprices[ticker] = Price.ToPriceVM(prices);
-            }        
-
-            return allprices;
+            return Ok(allprices);
         }
 
         [HttpGet]
-        [Route("[controller]/{querystring}/getweeklyprices")]
+        [Route("[controller]/getweeklyprices/{querystring}")]
         [Produces("application/json")]
         public async Task<ActionResult<Dictionary<string, List<PriceVM>>?>> TryGetWeeklyPricesAsync(string querystring)
         {
-            //API returns the weekstart date as the Date value in the price model.
-            TimePeriod period = TimePeriod.Weekly;
-            var q = querystring;
-            var dict = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(q);
-            var datebegin = dict["datebegin"].ToString(); dict.Remove("datebegin");
-            var dateend = dict["dateend"].ToString(); dict.Remove("dateend");
-            var Selectedtickers = dict.Values.Select(x => x.ToString()).ToArray();
-
-            Dictionary<string, List<PriceVM>>? allprices = new();
-            foreach (var ticker in Selectedtickers)
-            {
-                var prices = await this.dataRetrievalService.TryGetPriceDataAsync(ticker, datebegin, dateend, period);
-                if (prices == null) { Response.StatusCode = 404; allprices = null; return allprices; }
-                allprices[ticker] = Price.ToPriceVM(prices);
-            }
-
-            return allprices;
+            return Ok();
         }
 
 
@@ -126,15 +87,13 @@ namespace truthfulls.com.Controllers
         [Produces("application/json")]
         public async Task<ActionResult<List<string>?>> GetAllTickers()
         {
-            var tickers = await dataRetrievalService.GetTickerDataAsync();
-            if(tickers == null){ Response.StatusCode = 404; return tickers; }
-
-            Response.StatusCode = 200;
-            return tickers;
+            var tickers = await this._marketContext.TryGetTickers();
+            if (tickers == null) { return NotFound(); }
+            else { return Ok(tickers); }
+            
 
         }
-
-        //comment on development branch
+     
 
     }
 }

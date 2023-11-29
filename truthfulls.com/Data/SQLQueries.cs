@@ -12,7 +12,7 @@ namespace truthfulls.com.Data
     {
         public static string Tickers()
         {
-            return $@"select s.ticker from stock s";
+            return $@"select distinct p.ticker from price p";
         }
         public static string WeeklyPriceData(string ticker, string startDate, string endDate)
         {
@@ -224,6 +224,25 @@ namespace truthfulls.com.Data
             ";
         }
 
+        public static string GetSeries()
+        {
+            return
+
+            $@"
+                select * from series
+            ";
+        }
+
+        public static string GetSeriesObservations(string seriesid)
+        {
+            return
+
+            $@"
+                select o.* 
+                from observations o 
+                where o.SeriesID = '{seriesid}'
+            ";
+        }
 
     }
 }

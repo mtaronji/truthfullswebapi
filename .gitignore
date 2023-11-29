@@ -23,3 +23,5 @@
 /truthfulls.com/.config
 truthfulls.com/migrations
 
+/truthfulls.com/Data/user.db-shm
+/truthfulls.com/Data/user.db-wal

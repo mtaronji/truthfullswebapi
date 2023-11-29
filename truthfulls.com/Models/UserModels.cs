@@ -1,6 +1,8 @@
-﻿namespace truthfulls.com.Models
+﻿namespace truthfulls.com.Models;
+
+public class LoginVM
 {
-    public class UserModels
-    {
-    }
+    public required string username { get; set; }
+    public required string email { get; set; }
+    public required string[] roles { get; set; }
 }

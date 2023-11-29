@@ -40,9 +40,9 @@ stages:
       displayName: "Install Nuget"
       
     - task: UseDotNet@2 
-      displayName: ".Install NET Core 6.x"
+      displayName: ".Install NET Core 7.x"
       inputs:
-        version: '6.x'
+        version: '7.x'
         packageType: sdk
 
     - script: |
@@ -77,8 +77,8 @@ stages:
 
     - task: NodeTool@0
       inputs:
-        versionSpec: 18.10.x
-      displayName: "Install node 18.10.x"
+        versionSpec: 18.13.x
+      displayName: "Install node 18.13.x"
     - script: |
               cd $(System.DefaultWorkingDirectory)/truthfullsUI
               npm ci 

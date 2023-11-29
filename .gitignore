@@ -25,3 +25,8 @@ truthfulls.com/migrations
 
 /truthfulls.com/Data/user.db-shm
 /truthfulls.com/Data/user.db-wal
+/truthfulls.com/appsettings.Development.json
+/truthfulls.com/appsettings.Production.json
+/truthfulls.com/appsettings.json
+/truthfulls.com/appsettings.Development.json
+/truthfulls.com/appsettings.Production.json

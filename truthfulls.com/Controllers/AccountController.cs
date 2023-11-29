@@ -22,8 +22,9 @@ namespace truthfulls.com.Controllers
             this._signinmanager = signinmanager;
             this._userManager = userManager;
             this._roleManager = rolemanager;
-   
-            this.externalcallbackurl = "https://localhost:50814/account/externallogincallback";
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development") { this.externalcallbackurl = "https://localhost:50814/account/externallogincallback"; }
+            else { this.externalcallbackurl = "https://datanets.azurewebsites.net/account/externallogincallback"; }
         }
 
         //if we are loggin in from our angular front end in development mode, we will have a different url.

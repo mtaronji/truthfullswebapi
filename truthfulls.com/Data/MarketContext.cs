@@ -47,7 +47,7 @@ namespace truthfulls.com.Data
 
             foreach (var ticker in queryobject.Tickers) 
             {
-                var prices = await this.StockPrices.FromSqlRaw($"select * from Stock.GetStockPrices('{ticker}','{queryobject.datebegin}','{queryobject.dateend}')").ToListAsync<StockModels.Price>();
+                var prices = await this.StockPrices.FromSqlRaw($"select * from Stock.GetStockPrices ('{ticker}','{queryobject.datebegin}','{queryobject.dateend}') order by [date]").ToListAsync<StockModels.Price>();
                 allprices[ticker] = truthfulls.com.StockModels.Price.ToPriceVM(prices);
             } 
 
@@ -64,7 +64,7 @@ namespace truthfulls.com.Data
 
             foreach (var code in Codes)
             {             
-                var temp = await this.OptionPrices.Select(p => p).Where(p => p.Code == code).ToListAsync<OptionModels.Price>();
+                var temp = await this.OptionPrices.FromSqlRaw($"select * from stockoption.price where code = '{code}' order by duration").ToListAsync<OptionModels.Price>();
                 optionprices[code] = temp.ToVM();
             }
             return optionprices;
@@ -78,7 +78,7 @@ namespace truthfulls.com.Data
             Dictionary<string, List<string>> allcodes = new();
             foreach(var ticker in tickers)
             {
-                var codes = await this.OptionCodes.FromSqlRaw($"select * from StockOption.GetCodes('{ticker}')").Select(o => o.Code).ToListAsync<string>();
+                var codes = await this.OptionCodes.FromSqlRaw($"select * from StockOption.GetCodes('{ticker}')" ).Select(o => o.Code).ToListAsync<string>();
                 allcodes[ticker] = codes;
             }
               

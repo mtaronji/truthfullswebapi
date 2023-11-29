@@ -43,7 +43,14 @@ builder.Services.AddDbContext<UserContext>(options =>
 }
 );
 
-builder.Services.AddDbContext<MarketContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLCONNSTR_default")));
+if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+{
+    builder.Services.AddDbContext<MarketContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLAZURECONNSTR_default")));
+}
+else
+{
+    builder.Services.AddDbContext<MarketContext>(options =>  options.UseSqlServer(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_default")));
+}
 builder.Services.AddSingleton<UtilityService>();
 
 

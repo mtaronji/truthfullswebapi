@@ -5,6 +5,7 @@ using System.Data;
 using truthfulls.com.OptionModels;
 using Option.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using truthfulls.com.FREDModels;
 
 
 namespace truthfulls.com.Data
@@ -25,6 +26,8 @@ namespace truthfulls.com.Data
 
         DbSet<OptionModels.Price> OptionPrices { get; set; }
         DbSet<StockModels.Price> StockPrices { get; set; }
+        DbSet<FREDModels.Series> Series { get; set; }
+        DbSet<FREDModels.Observations> Observations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,6 +41,9 @@ namespace truthfulls.com.Data
 
             modelBuilder.Entity<SequenceComplete>().Property(p => p.IsComplete).HasDefaultValue(false);
             modelBuilder.Entity<SequenceComplete>().HasKey(s => s.Code);
+
+            modelBuilder.Entity<FREDModels.Observations>().HasNoKey();
+            modelBuilder.Entity<FREDModels.Observations>().HasIndex(o => new { o.SeriesID, o.Date }).IsUnique();
    
         }
 
@@ -85,6 +91,16 @@ namespace truthfulls.com.Data
             return allcodes;
         }
 
+        public async Task<List<FREDModels.Observations>?> TryGetSeriesObservationsAsync(string seriesid)
+        {
+            var observations = await this.Observations.Select(o => o).Where(o => o.SeriesID == seriesid).OrderBy(o => o.Date).ToListAsync<FREDModels.Observations>();
+            return observations;
+        }
 
+        public async Task<List<Series>?> TryGetSeriessAsync()
+        {
+            var series = await this.Series.Select(o => o).ToListAsync<Series>();
+            return series;
+        }
     }
 }

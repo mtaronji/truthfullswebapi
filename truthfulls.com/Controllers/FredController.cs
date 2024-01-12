@@ -11,17 +11,18 @@ namespace truthfulls.com.Controllers
     [ApiController]
     public class FredController : ControllerBase
     {
-        private MarketContext _market;
-        public FredController(MarketContext market)
+        //private MarketContext _market;
+        private FREDContext _fredcontext;
+        public FredController(FREDContext fredcontext)
         {
-            this._market = market;
+            this._fredcontext = fredcontext;
         }
 
         [Route("[controller]/getseries")]
         [HttpGet]
         public async Task<IActionResult> GetSeries()
         {
-            var seriess = await this._market.TryGetSeriessAsync();
+            var seriess = await this._fredcontext.TryGetSeriessAsync();
             if (seriess == null) { return BadRequest(); }
             else { return Ok(seriess); }
         }
@@ -31,7 +32,7 @@ namespace truthfulls.com.Controllers
         public async Task<IActionResult> GetSeriesObservations(string? seriesid = null)
         {
             if (seriesid == null) { return BadRequest(); }
-            var observations = await this._market.TryGetSeriesObservationsAsync(seriesid);
+            var observations = await this._fredcontext.TryGetSeriesObservationsAsync(seriesid);
 
             if (observations == null) { return BadRequest(); }
             else { return Ok(observations); }

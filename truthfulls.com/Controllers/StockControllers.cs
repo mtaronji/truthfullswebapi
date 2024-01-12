@@ -12,15 +12,26 @@ namespace truthfulls.com.Controllers
     { 
 
         
-        private MarketContext _marketContext;
+        //private MarketContext _marketContext;
+        private StockContext _stockcontext;
         private UtilityService _utility;
-        public StockController(MarketContext market, UtilityService Utility)
+        public StockController(StockContext stockcontext, UtilityService Utility)
         {
-            this._marketContext = market;
+            this._stockcontext = stockcontext;
             this._utility = Utility;
           
         }
 
+        [HttpGet]
+        [Route("/[controller]/getalltickers")]
+        [Produces("application/json")]
+        public async Task<ActionResult<List<string>?>> GetAllTickers()
+        {
+            var tickers = await this._stockcontext.TryGetTickers();
+            if (tickers == null) { return NotFound(); }
+            else { return Ok(tickers); }
+
+        }
 
         [HttpGet]
         [Route("[controller]/getdailyprices/{querystring}")]
@@ -29,7 +40,7 @@ namespace truthfulls.com.Controllers
         public async Task<ActionResult<Dictionary<string, List<PriceVM>>?>> TryGetDailyPricesAsync(string? querystring = null)
         { 
             var queryobject = this._utility.TryParseTickersDateRange(querystring); if (queryobject == null) { return BadRequest(); }
-            var allprices = await this._marketContext.TryGetDailyStockPricesAsync(queryobject); 
+            var allprices = await this._stockcontext.TryGetDailyStockPricesAsync(queryobject); 
 
             return Ok(allprices);
         }
@@ -72,26 +83,6 @@ namespace truthfulls.com.Controllers
         public async Task<IActionResult> GetEMA(string name, int duration)
         {
             throw new NotImplementedException();
-        }
-
-
-        [HttpGet]
-        [Route("/[controller]/{querystring}")]
-        public async Task<IActionResult> GetDailyPrices(string querystring)
-        {
-            throw new NotImplementedException();
-        }
-
-        [HttpGet]
-        [Route("/[controller]/getalltickers")]
-        [Produces("application/json")]
-        public async Task<ActionResult<List<string>?>> GetAllTickers()
-        {
-            var tickers = await this._marketContext.TryGetTickers();
-            if (tickers == null) { return NotFound(); }
-            else { return Ok(tickers); }
-            
-
         }
      
 

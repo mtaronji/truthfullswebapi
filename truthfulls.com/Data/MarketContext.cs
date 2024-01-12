@@ -10,6 +10,9 @@ using truthfulls.com.FREDModels;
 
 namespace truthfulls.com.Data
 {
+
+    //to be used with sql server
+
     public class MarketContext : DbContext
     {
         
@@ -55,6 +58,7 @@ namespace truthfulls.com.Data
             {
                 var prices = await this.StockPrices.FromSqlRaw($"select * from Stock.GetStockPrices ('{ticker}','{queryobject.datebegin}','{queryobject.dateend}') order by [date]").ToListAsync<StockModels.Price>();
                 allprices[ticker] = truthfulls.com.StockModels.Price.ToPriceVM(prices);
+
             } 
 
             return allprices;

@@ -70,7 +70,7 @@ namespace truthfulls.com.Data
             Dictionary<string, List<string>> allcodes = new();
             foreach (var ticker in tickers)
             {            
-                var codes = await (from c in this.OptionCodes where c.Code.Contains("SPY") select c.Code).ToListAsync<string>();
+                var codes = await (from c in this.OptionCodes where c.Code.Contains(ticker) select c.Code).ToListAsync<string>();
 
                 string pattern = $@"^{ticker}\w+";
                 Regex searchTerm = new Regex(pattern);

@@ -10,6 +10,9 @@
 *.exe
 *.user
 *.sln
+*.yaml
+*.db-shm
+*.db-wal
 
 #ignore truthfulls ui build
 /truthfulls.com/truthfulls-ui

@@ -1,39 +1,62 @@
-﻿using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using truthfulls.com.Models;
+using truthfulls.com.StockModels;
+using System.Data;
 
 namespace truthfulls.com.Data
 {
-    public class StockContext:DbContext
+
+    //to be used with sql server
+
+    public class StockContext : DbContext
     {
+
         public StockContext(DbContextOptions<StockContext> options) : base(options)
         {
 
         }
 
-        public StockContext()
-        {
-        }
-
-        public DbSet<truthfulls.com.Models.Stock> Stocks { get; set; }
-        public DbSet<truthfulls.com.Models.Sector> Sectors { get; set; }
-        public DbSet<truthfulls.com.Models.Price> Prices { get; set; }
-        //public DbSet<truthfulls.com.Models.FinanciaDate> FinancialDates { get; set; }
+        DbSet<FinancialDate> FinancialDates { get; set; }
+        DbSet<StockModels.Stock> Stocks { get; set; }
+        DbSet<StockModels.Price> StockPrices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<truthfulls.com.Models.Stock>().ToTable("Stock");
-            modelBuilder.Entity<truthfulls.com.Models.Sector>().ToTable("Sector").HasNoKey();
-            modelBuilder.Entity<truthfulls.com.Models.Price>().ToTable("Price").HasNoKey();
-            modelBuilder.Entity<truthfulls.com.Models.FinancialDate>().ToTable("FinancialDate");
+            base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.HasDefaultSchema("Stock");
+            modelBuilder.Entity<StockModels.Price>().HasIndex(c => new { c.Ticker, c.Date }).IsUnique();
+            modelBuilder.Entity<StockModels.Price>().HasNoKey();
+
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public async Task<Dictionary<string, List<StockModels.PriceVM>>?> TryGetDailyStockPricesAsync(QueryStringTickersDateRange queryobject)
         {
-            base.OnConfiguring(optionsBuilder);
+            //set automatically back 
+            var datebegin = DateTime.Parse(queryobject.datebegin);
+            var dateend = DateTime.Parse(queryobject.dateend);
+      
+            Dictionary<string, List<PriceVM>>? allprices = new();
+
+            foreach (var ticker in queryobject.Tickers)
+            {
+                var prices = await 
+                              (from price in this.StockPrices
+                              where price.Ticker == ticker && price.Date > datebegin && price.Date < dateend
+                              select price
+                              )
+                             .ToListAsync<Price>();
+                      
+                allprices[ticker] = Price.ToPriceVM(prices);
+            }
+            return allprices;
         }
 
+        public async Task<List<string>?> TryGetTickers()
+        {
+            return await this.Stocks.Select(s => s.Ticker).ToListAsync<string>();
+        }
+     
     }
 }
+
+

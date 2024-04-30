@@ -35,13 +35,13 @@ namespace truthfulls.com.Controllers
         public IActionResult ExternalLogin(string provider, string? redirecturl = null)
         {
 
-            if (redirecturl != null) { redirecturl = HttpUtility.UrlEncode(redirecturl); } 
-            
+            if (redirecturl != null) { redirecturl = HttpUtility.UrlEncode(redirecturl); }
+
             var properties = this._signinmanager.ConfigureExternalAuthenticationProperties(provider, "");
             properties.RedirectUri = $"{this.externalcallbackurl}/{redirecturl}";
 
             return Challenge(properties, provider);
-            
+
         }
 
         [HttpGet]
@@ -57,8 +57,8 @@ namespace truthfulls.com.Controllers
             {
                 returnURL = HttpUtility.UrlDecode(redirecturl);
             }
-            
-                    
+
+
             var info = await this._signinmanager.GetExternalLoginInfoAsync();
             if (info == null)
             {
@@ -67,7 +67,7 @@ namespace truthfulls.com.Controllers
             }
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
             if (email == null) { return RedirectToPage("Error", new { error = "Could not find an email address" }); }
-            
+
 
             var user = await this._userManager.FindByEmailAsync(email);
             if (user == null)
@@ -82,13 +82,13 @@ namespace truthfulls.com.Controllers
                     return BadRequest(errorModel);
                 }
                 var claimaddresult = await this._userManager.AddClaimsAsync(user, info.Principal.Claims);
-                if (claimaddresult != IdentityResult.Success) { return BadRequest(new {error = "Error adding claims for user"}); }
+                if (claimaddresult != IdentityResult.Success) { return BadRequest(new { error = "Error adding claims for user" }); }
 
                 var addloginresult = await this._userManager.AddLoginAsync(user, info);
                 if (addloginresult != IdentityResult.Success) { return BadRequest(new { error = "Error adding login for user" }); }
 
             }
-            
+
             //try to sign in with external login info. If it fails, try adding login and signing in again
             //if that fails return bad request
             var result = await this._signinmanager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
@@ -109,22 +109,22 @@ namespace truthfulls.com.Controllers
         [Route("[controller]/isauthenicated")]
         public async Task<IActionResult> IsAuthenicated()
         {
-            
+
             if (User.Identity == null) { return Unauthorized(); }
 
-            if (User.Identity.IsAuthenticated) 
+            if (User.Identity.IsAuthenticated)
             {
                 var user = await this._userManager.GetUserAsync(User);
                 if (user == null || user.Email == null || user.UserName == null) { return NotFound(); }
                 var rolenames = this._roleManager.Roles.ToList();
-                if(rolenames.Count == 0) { return NotFound(); }
+                if (rolenames.Count == 0) { return NotFound(); }
                 string[] roles = { };
-                foreach(var role in rolenames)
+                foreach (var role in rolenames)
                 {
-                    if(role.Name == null) { return NotFound(); }
+                    if (role.Name == null) { return NotFound(); }
                     if (User.IsInRole(role.Name)) { roles.Append(role.Name); }
                 }
-                return Ok(new LoginVM() { email = user.Email, username = user.UserName, roles = roles});
+                return Ok(new LoginVM() { email = user.Email, username = user.UserName, roles = roles });
             }
             else { return Ok(null); }
 
@@ -141,9 +141,9 @@ namespace truthfulls.com.Controllers
         [HttpGet]
         [Route("isuser")]
         public IActionResult IsUser()
-        {           
+        {
             var isUser = User.IsInRole("User");
-            return Ok( new { isuser = isUser });
+            return Ok(new { isuser = isUser });
         }
 
         [HttpGet]

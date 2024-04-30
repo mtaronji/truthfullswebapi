@@ -50,19 +50,19 @@ namespace truthfulls.com.StockModels
         public DateTime Date { get; set; }
 
         [Column(TypeName = "money")]
-        public decimal Open { get; set; }
+        public double Open { get; set; }
 
         [Column(TypeName = "money")]
-        public decimal Close { get; set; }
+        public double Close { get; set; }
 
         [Column(TypeName = "money")]
-        public decimal AdjClose { get; set; }
+        public double AdjClose { get; set; }
 
         [Column(TypeName = "money")]
-        public decimal Low { get; set; }
+        public double Low { get; set; }
 
         [Column(TypeName = "money")]
-        public decimal High { get; set; }
+        public double High { get; set; }
 
         [Column(TypeName = "bigint")]
         public Int64 Volume { get; set; }
@@ -104,14 +104,14 @@ namespace truthfulls.com.StockModels
     {
         public string date { get; set;}
 
-        public decimal open { get; set; }
-        public decimal close { get; set; }
-        public decimal adjclose { get; set; }
-        public decimal high { get; set; }
+        public double open { get; set; }
+        public double close { get; set; }
+        public double adjclose { get; set; }
+        public double high { get; set; }
 
-        public decimal low { get; set; }
+        public double low { get; set; }
 
-        public Int64 volume { get; set; }      
+        public long volume { get; set; }      
     }
 
 }

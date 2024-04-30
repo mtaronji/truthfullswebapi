@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
+
 using truthfulls.com.Data;
 using truthfulls.com.Services;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,18 +45,6 @@ builder.Services.AddDbContext<UserContext>(options =>
     options.UseSqlite(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_identity"));
 }
 );
-if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-{
-    builder.Services.AddDbContext<StockContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("CUSTOMCONNSTR_stock")));
-    builder.Services.AddDbContext<OptionContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("CUSTOMCONNSTR_option")));
-    builder.Services.AddDbContext<FREDContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("CUSTOMCONNSTR_fred")));
-}
-else
-{
-    builder.Services.AddDbContext<StockContext>(options => options.UseSqlite(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_stock")));
-    builder.Services.AddDbContext<OptionContext>(options => options.UseSqlite(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_option")));
-    builder.Services.AddDbContext<FREDContext>(options => options.UseSqlite(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_fred")));
-}
 
 //if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
 //{
@@ -65,24 +55,11 @@ else
 //    builder.Services.AddDbContext<MarketContext>(options =>  options.UseSqlServer(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_default")));
 //}
 
-if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-{
-    builder.Services.AddDbContext<MarketContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLAZURECONNSTR_default")));
-}
-else
-{
-    builder.Services.AddDbContext<MarketContext>(options => options.UseSqlServer(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_default")));
-}
 
 builder.Services.AddSingleton<UtilityService>();
+builder.Services.AddScoped<PunkInterpreter>();
 
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-{
-    // options are set here
-})
-.AddRoles<IdentityRole>()
-.AddEntityFrameworkStores<UserContext>();
 
 
 builder.Services.AddAuthentication()

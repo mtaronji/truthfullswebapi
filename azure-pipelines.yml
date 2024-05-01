@@ -16,10 +16,10 @@ resources:
     endpoint: mtaronji
     name: mtaronji/truthfullsUI
     ref: "refs/heads/dev"
-  - repository:  Punk
+  - repository:  punk
     type: github
     endpoint: mtaronji
-    name: mtaronji/Punk
+    name: mtaronji/punk
     ref: "refs/heads/dev"
   pipelines:
   - pipeline: 9 

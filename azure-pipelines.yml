@@ -23,11 +23,11 @@ resources:
     ref: "refs/heads/dev"
   pipelines:
   - pipeline: 9 
-    source: mtaronji.truthfullsUI # Name of the pipeline that produces the artifact.
+    source: mtaronji.truthfullsUI # UI update
     branch: dev
     trigger: true 
   - pipeline: 16 
-    source: mtaronji.Punk # Name of the pipeline that produces the artifact.
+    source: mtaronji.Punk #Punk language pipeline
     branch: dev
     trigger: true 
     

@@ -71,10 +71,12 @@ stages:
         TargetFolder: $(System.DefaultWorkingDirectory)/truthfullswebapi/TruthfullsTests
       displayName: "Copying unit test db to the pipeline to run tests"
     - script: |
-               echo $(System.DefaultWorkingDirectory)
-               cd $(System.DefaultWorkingDirectory)/truthfullswebapi
+              
+               cd $(System.DefaultWorkingDirectory)/truthfullswebapi/truthfulls.com
+               dotnet add ./truthfulls.com/truthfulls.com.csproj package Punk
+               dotnet add ./TruthfullsTests/TruthfullsTests.csproj package Punk
                dotnet test
-      displayName: 'Testing WEB API'
+      displayName: 'Install punk one webapi and on tests'
       
     - task: DotNetCoreCLI@2
       inputs:

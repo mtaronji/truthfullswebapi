@@ -7,7 +7,7 @@ trigger:
 - development
 
 pool:
-  name: truthfullspool
+  name: windows_agent
 
 resources:
   repositories:
@@ -16,9 +16,18 @@ resources:
     endpoint: mtaronji
     name: mtaronji/truthfullsUI
     ref: "refs/heads/dev"
+  - repository:  punk
+    type: github
+    endpoint: mtaronji
+    name: mtaronji/punk
+    ref: "refs/heads/dev"
   pipelines:
   - pipeline: 9 
     source: mtaronji.truthfullsUI # Name of the pipeline that produces the artifact.
+    branch: dev
+    trigger: true 
+  - pipeline: 16 
+    source: mtaronji.Punk # Name of the pipeline that produces the artifact.
     branch: dev
     trigger: true 
     
@@ -35,16 +44,20 @@ stages:
     displayName: "Test and Build Truthfulls Web API"
     steps:
     - checkout: self
-    - checkout: UI
+    - checkout: ui
+    - checkout: punk
     - task: NuGetToolInstaller@1
       displayName: "Install Nuget"
       
     - task: UseDotNet@2 
-      displayName: ".Install NET Core 7.x"
+      displayName: ".Install NET Core 8.x"
       inputs:
-        version: '7.x'
+        version: '8.x'
         packageType: sdk
-
+    - script: |
+              cd $(System.DefaultWorkingDirectory)/Punk
+              dotnet build --configuration $(buildConfiguration)
+      displayName: 'Build Punk'
     - script: |
               echo $(System.DefaultWorkingDirectory)
               cd $(System.DefaultWorkingDirectory)/truthfullswebapi
@@ -57,11 +70,13 @@ stages:
                 *.db
         TargetFolder: $(System.DefaultWorkingDirectory)/truthfullswebapi/TruthfullsTests
       displayName: "Copying unit test db to the pipeline to run tests"
-    - script: |
-               echo $(System.DefaultWorkingDirectory)
-               cd $(System.DefaultWorkingDirectory)/truthfullswebapi
+    - script: |             
+               cd $(System.DefaultWorkingDirectory)/truthfullswebapi/truthfulls.com
+               dotnet add truthfulls.com.csproj package Punk
+               cd $(System.DefaultWorkingDirectory)/truthfullswebapi/TruthfullsTests
+               dotnet add TruthfullsTests.csproj package Punk
                dotnet test
-      displayName: 'Testing WEB API'
+      displayName: 'Install punk into webapi project and test project and run tests'
       
     - task: DotNetCoreCLI@2
       inputs:
@@ -70,10 +85,10 @@ stages:
         arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: false
       displayName: "Publishing webapi to artifact staging"
-    - script: |
-              cd $(Build.ArtifactStagingDirectory)/truthfulls.com
-              mkdir app_data
-      displayName: "Creating app_data directory"
+    # - script: |
+    #           cd $(Build.ArtifactStagingDirectory)/truthfulls.com
+    #           mkdir app_data
+      # displayName: "Creating app_data directory"
 
     - task: NodeTool@0
       inputs:

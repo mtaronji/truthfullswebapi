@@ -16,6 +16,11 @@ resources:
     endpoint: mtaronji
     name: mtaronji/truthfullsUI
     ref: "refs/heads/dev"
+  - repository:  punk
+    type: github
+    endpoint: mtaronji
+    name: mtaronji/Punk
+    ref: "refs/heads/dev"
   pipelines:
   - pipeline: 9 
     source: mtaronji.truthfullsUI # Name of the pipeline that produces the artifact.

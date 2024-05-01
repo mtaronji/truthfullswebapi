@@ -44,7 +44,8 @@ stages:
     displayName: "Test and Build Truthfulls Web API"
     steps:
     - checkout: self
-    - checkout: UI
+    - checkout: ui
+    - checkout: punk
     - task: NuGetToolInstaller@1
       displayName: "Install Nuget"
       

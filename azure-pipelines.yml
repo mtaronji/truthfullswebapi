@@ -108,7 +108,7 @@ stages:
     - script: |
               echo $(System.DefaultWorkingDirectory)
               cd $(System.DefaultWorkingDirectory)/truthfullsUI
-              ng build --configuration production
+              ng build --prod
       displayName: "Build Release UI"
     - task: CopyFiles@2
       inputs:

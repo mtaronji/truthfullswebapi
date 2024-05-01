@@ -7,7 +7,7 @@ trigger:
 - development
 
 pool:
-  name: truthfullspool
+  name: windows_agent
 
 resources:
   repositories:
@@ -19,6 +19,10 @@ resources:
   pipelines:
   - pipeline: 9 
     source: mtaronji.truthfullsUI # Name of the pipeline that produces the artifact.
+    branch: dev
+    trigger: true 
+  - pipeline: 16 
+    source: mtaronji.Punk # Name of the pipeline that produces the artifact.
     branch: dev
     trigger: true 
     
@@ -44,7 +48,10 @@ stages:
       inputs:
         version: '8.x'
         packageType: sdk
-
+    - script: |
+              cd $(System.DefaultWorkingDirectory)/Punk
+              dotnet build --configuration $(buildConfiguration)
+      displayName: 'Build Punk'
     - script: |
               echo $(System.DefaultWorkingDirectory)
               cd $(System.DefaultWorkingDirectory)/truthfullswebapi

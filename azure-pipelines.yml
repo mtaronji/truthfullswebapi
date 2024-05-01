@@ -93,7 +93,7 @@ stages:
     - task: NodeTool@0
       inputs:
         versionSpec: 20.11.x
-      displayName: "Install node 18.13.x"
+      displayName: "Install node 20.11.x"
     - script: |
               cd $(System.DefaultWorkingDirectory)/truthfullsUI
               npm ci 
@@ -112,7 +112,7 @@ stages:
       displayName: "Build Release UI"
     - task: CopyFiles@2
       inputs:
-        SourceFolder: $(System.DefaultWorkingDirectory)/truthfullsUI/dist/truthfullsUI
+        SourceFolder: $(System.DefaultWorkingDirectory)/truthfullsUI/dist
         TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com
       displayName: "Copying Angular build to Artifact staging directory"
       

@@ -98,7 +98,7 @@ stages:
               cd $(System.DefaultWorkingDirectory)/truthfullsUI
               npm ci 
               npm install -g @angular/cli
-              ng build
+              ng build --configuration production
       displayName: "Installing npm, angular and building the UI"
     - script: |
               echo $(System.DefaultWorkingDirectory)
@@ -108,7 +108,7 @@ stages:
       
     - task: CopyFiles@2
       inputs:
-        SourceFolder: $(System.DefaultWorkingDirectory)/truthfullsUI/dist
+        SourceFolder: $(System.DefaultWorkingDirectory)/truthfullsUI/dist/truthfullsUI
         TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com
       displayName: "Copying Angular build to Artifact staging directory"
       

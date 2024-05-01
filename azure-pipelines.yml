@@ -92,20 +92,24 @@ stages:
 
     - task: NodeTool@0
       inputs:
-        versionSpec: 18.13.x
+        versionSpec: 20.11.x
       displayName: "Install node 18.13.x"
     - script: |
               cd $(System.DefaultWorkingDirectory)/truthfullsUI
               npm ci 
               npm install -g @angular/cli
-              ng build --configuration production
-      displayName: "Installing npm, angular and building the UI"
+      displayName: "Installing npm, angular"
     - script: |
               echo $(System.DefaultWorkingDirectory)
               cd $(System.DefaultWorkingDirectory)/truthfullsUI
               ng test TruthfullsUI --code-coverage --karma-config karma.conf.ci.js 
-      displayName: "running tests on UI"
+      displayName: "Run UI Tests"
       
+    - script: |
+              echo $(System.DefaultWorkingDirectory)
+              cd $(System.DefaultWorkingDirectory)/truthfullsUI
+              ng build --configuration production
+      displayName: "Build Release UI"
     - task: CopyFiles@2
       inputs:
         SourceFolder: $(System.DefaultWorkingDirectory)/truthfullsUI/dist/truthfullsUI

@@ -40,7 +40,7 @@ stages:
       displayName: "Install Nuget"
       
     - task: UseDotNet@2 
-      displayName: ".Install NET Core 7.x"
+      displayName: ".Install NET Core 8.x"
       inputs:
         version: '8.x'
         packageType: sdk

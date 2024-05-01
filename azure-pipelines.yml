@@ -16,7 +16,7 @@ resources:
     endpoint: mtaronji
     name: mtaronji/truthfullsUI
     ref: "refs/heads/dev"
-  - repository:  punk
+  - repository:  Punk
     type: github
     endpoint: mtaronji
     name: mtaronji/Punk

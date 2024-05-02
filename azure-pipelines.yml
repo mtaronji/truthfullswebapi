@@ -118,8 +118,8 @@ stages:
       
     - task: CopyFiles@2
       inputs:
-        SourceFolder: $(Agent.RootDirectory)/Data
-        TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com/Data
+        SourceFolder: $(Agent.RootDirectory)/DataContexts
+        TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com/DataContexts
       displayName: "Copying SQL lite production DB"
     - task: ArchiveFiles@2
       inputs:

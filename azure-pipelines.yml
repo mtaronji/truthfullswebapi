@@ -76,7 +76,7 @@ stages:
                cd $(System.DefaultWorkingDirectory)/truthfullswebapi/TruthfullsTests
                dotnet add TruthfullsTests.csproj package Punk
                dotnet test
-      displayName: 'Install punk into webapi project and test project and run tests'
+      displayName: 'Install Punk & Test'
       
     - task: DotNetCoreCLI@2
       inputs:

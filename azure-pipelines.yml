@@ -23,11 +23,11 @@ resources:
     ref: "refs/heads/dev"
   pipelines:
   - pipeline: 9 
-    source: mtaronji.truthfullsUI # Name of the pipeline that produces the artifact.
+    source: mtaronji.truthfullsUI # UI update
     branch: dev
     trigger: true 
   - pipeline: 16 
-    source: mtaronji.Punk # Name of the pipeline that produces the artifact.
+    source: mtaronji.Punk #Punk language pipeline
     branch: dev
     trigger: true 
     
@@ -92,20 +92,24 @@ stages:
 
     - task: NodeTool@0
       inputs:
-        versionSpec: 18.13.x
-      displayName: "Install node 18.13.x"
+        versionSpec: 20.11.x
+      displayName: "Install node 20.11.x"
     - script: |
               cd $(System.DefaultWorkingDirectory)/truthfullsUI
               npm ci 
               npm install -g @angular/cli
-              ng build
-      displayName: "Installing npm, angular and building the UI"
+      displayName: "Installing npm, angular"
     - script: |
               echo $(System.DefaultWorkingDirectory)
               cd $(System.DefaultWorkingDirectory)/truthfullsUI
               ng test TruthfullsUI --code-coverage --karma-config karma.conf.ci.js 
-      displayName: "running tests on UI"
+      displayName: "Run UI Tests"
       
+    - script: |
+              echo $(System.DefaultWorkingDirectory)
+              cd $(System.DefaultWorkingDirectory)/truthfullsUI
+              ng build 
+      displayName: "Build Release UI"
     - task: CopyFiles@2
       inputs:
         SourceFolder: $(System.DefaultWorkingDirectory)/truthfullsUI/dist
@@ -114,8 +118,8 @@ stages:
       
     - task: CopyFiles@2
       inputs:
-        SourceFolder: $(Agent.RootDirectory)/Data
-        TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com/Data
+        SourceFolder: $(Agent.RootDirectory)/DataContexts
+        TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com/DataContexts
       displayName: "Copying SQL lite production DB"
     - task: ArchiveFiles@2
       inputs:
@@ -123,9 +127,7 @@ stages:
         includeRootFolder: false
         archiveType: zip
         archiveFile: $(Build.ArtifactStagingDirectory)/truthfulls.zip
-    - script: |
-              rm -r -f $(Build.ArtifactStagingDirectory)/truthfulls.com
-      displayName: "Cleanup"
+      displayName: "Archive the File"
     - task: PublishPipelineArtifact@1
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)' 

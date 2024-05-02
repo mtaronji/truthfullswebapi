@@ -50,12 +50,6 @@
     <ProjectReference Include="..\truthfulls.com\truthfulls.com.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="DataContexts\SP500.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="DataContexts\SP500O.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="unittest.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -112,7 +112,14 @@ namespace truthfulls.com.Services
                         var result = resultnode.GetResult();
                         if (result != null)
                         {
-                            if (resultnode is QueryNode)
+                            if(resultnode is IdentifierNode)
+                            {
+                                var idnode = (IdentifierNode)resultnode;
+                                if (idnode.Value == null) { return null; }
+                                else { resultnode = (IResultTreeNode)idnode.Value; }
+                                    
+                            }
+                            else if (resultnode is QueryNode)
                             {
                                 if (result != null) { results.Add( new { type = "query", results = result, print = node.print}); }
                             }

@@ -25,7 +25,6 @@ builder.Services.AddCors(options =>
                           policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowCredentials(); //for development of angular front end
                           policy.WithOrigins("https://localhost:50814");
 
-
                       });
 });
 
@@ -56,9 +55,8 @@ builder.Services.AddDbContext<UserContext>(options =>
 //}
 
 
-builder.Services.AddSingleton<UtilityService>();
 builder.Services.AddScoped<PunkInterpreter>();
-
+builder.Services.AddScoped<PunkPostParser>();
 
 
 

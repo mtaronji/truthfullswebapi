@@ -138,21 +138,21 @@ namespace truthfulls.com.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        [Route("isuser")]
-        public IActionResult IsUser()
-        {
-            var isUser = User.IsInRole("User");
-            return Ok(new { isuser = isUser });
-        }
+        //[HttpGet]
+        //[Route("isuser")]
+        //public IActionResult IsUser()
+        //{
+        //    var isUser = User.IsInRole("User");
+        //    return Ok(new { isuser = isUser });
+        //}
 
-        [HttpGet]
-        [Route("issubscriber")]
-        public IActionResult IsSubscriber()
-        {
-            var isSubscriber = User.IsInRole("Subscriber");
-            return Ok(new { issubscriber = isSubscriber });
-        }
+        //[HttpGet]
+        //[Route("issubscriber")]
+        //public IActionResult IsSubscriber()
+        //{
+        //    var isSubscriber = User.IsInRole("Subscriber");
+        //    return Ok(new { issubscriber = isSubscriber });
+        //}
 
     }
 }

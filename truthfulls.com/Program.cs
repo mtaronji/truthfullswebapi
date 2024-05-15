@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
-
 using truthfulls.com.Data;
+using truthfulls.com.Models;
 using truthfulls.com.Services;
 
 
@@ -34,26 +34,34 @@ builder.Services.AddControllers().AddJsonOptions(
 );
 builder.Services.AddRazorPages();
 builder.Services.AddMemoryCache();
-
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = 300000000;
+});
 //add cors for development with angular 
 
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UserContext>(options =>
 {
-    options.UseSqlite(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_identity"));
-}
-);
+    if (builder.Environment.IsEnvironment("Development"))
+    {
+        options.UseSqlite(builder.Configuration.GetConnectionString("CUSTOMCONNSTR_identity"));
+    }
+    else
+    {
+        options.UseSqlite(Environment.GetEnvironmentVariable("CUSTOMCONNSTR_identity"));
+    }
+    
+});
 
-//if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-//{
-//    builder.Services.AddDbContext<MarketContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SQLAZURECONNSTR_default")));
-//}
-//else
-//{
-//    builder.Services.AddDbContext<MarketContext>(options =>  options.UseSqlServer(Environment.GetEnvironmentVariable("SQLAZURECONNSTR_default")));
-//}
 
+builder.Services.AddDefaultIdentity<AppUser>(options =>
+{
+   
+})
+.AddRoles<IdentityRole>().AddSignInManager()
+.AddEntityFrameworkStores<UserContext>();
 
 builder.Services.AddScoped<PunkInterpreter>();
 builder.Services.AddScoped<PunkPostParser>();
@@ -61,7 +69,7 @@ builder.Services.AddScoped<PunkPostParser>();
 
 
 builder.Services.AddAuthentication()
-    
+
     .AddTwitter(twitteroptions =>
     {
         twitteroptions.SignInScheme = IdentityConstants.ExternalScheme;
@@ -69,7 +77,7 @@ builder.Services.AddAuthentication()
         twitteroptions.ConsumerSecret = Environment.GetEnvironmentVariable("Twitter:Secret");
         twitteroptions.RetrieveUserDetails = true;
     })
-    
+
     .AddFacebook(facebookoptions =>
     {
         string? fbid = Environment.GetEnvironmentVariable("FB:ID"); string? fbs = Environment.GetEnvironmentVariable("FB:S");
@@ -87,8 +95,7 @@ builder.Services.AddAuthentication()
         googleoptions.ClientId = gid;
         googleoptions.ClientSecret = gs;
 
-    })
-;
+    });
 
 string? env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
@@ -101,26 +108,7 @@ if (env == "Development")
 }
 
 
-
-
 var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    //app.UseExceptionHandler("/Error");
-
-    //app.UseSwagger();
-
-    //app.UseSwaggerUI(c =>
-    //{
-    //    //c.SwaggerEndpoint("/swagger/v1/swagger.json", "Stockamatics V1");
-    //    //c.RoutePrefix = string.Empty;
-    //});
-
-    // The default HSTS value is 30 days. You may want to change this for production scenarios,see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-
-}
 
 app.UseRouting();
 

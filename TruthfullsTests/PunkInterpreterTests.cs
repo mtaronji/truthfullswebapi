@@ -13,25 +13,25 @@ namespace TruthfullsTests
             this.Interpreter = new PunkInterpreter();
 
         }
-        [Test]
-        public async Task DataSyntaxWorks()
-        {
+        //[Test]
+        //public async Task DataSyntaxWorks()
+        //{
       
-        }
-        [Test]
-        public async Task DataSyntaxEvaluatesCorrectly()
-        {
+        //}
+        //[Test]
+        //public async Task DataSyntaxEvaluatesCorrectly()
+        //{
 
 
-        }
+        //}
 
-        [Test]
-        public async Task QuerySyntaxEvaluatesCorrectly()
-        {
+        //[Test]
+        //public async Task QuerySyntaxEvaluatesCorrectly()
+        //{
 
         
            
-        }
+        //}
     }
 }
 

@@ -52,7 +52,8 @@ namespace truthfulls.com.Services
                 var matrix = Matrix<double>.Build.DenseOfColumns(v.Vectors);
                 MatrixType m = new MatrixType(matrix);
                 var matrixnode = new MatrixNode(m);
-                this._parser.Identifiers.Add($"F{count}", new IdentifierNode(matrixnode));
+                var fileidentifiernode = new IdentifierNode($"F{count}",matrixnode);
+                this._parser.Identifiers.Add($"F{count}", fileidentifiernode);
                 count++;
             }
             PunkReturnResult result;
@@ -116,10 +117,10 @@ namespace truthfulls.com.Services
                             {
                                 var idnode = (IdentifierNode)resultnode;
                                 if (idnode.Value == null) { return null; }
-                                else { resultnode = (IResultTreeNode)idnode.Value; }
+                                else { resultnode = (IResultTreeNode)idnode.Value; result = resultnode.GetResult(); }
                                     
                             }
-                            else if (resultnode is QueryNode)
+                            if (resultnode is QueryNode)
                             {
                                 if (result != null) { results.Add( new { type = "query", results = result, print = node.print}); }
                             }

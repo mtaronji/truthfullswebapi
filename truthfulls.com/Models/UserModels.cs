@@ -1,4 +1,6 @@
-﻿namespace truthfulls.com.Models;
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace truthfulls.com.Models;
 
 public class LoginVM
 {
@@ -6,3 +8,4 @@ public class LoginVM
     public required string email { get; set; }
     public required string[] roles { get; set; }
 }
+

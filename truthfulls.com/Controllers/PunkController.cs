@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace truthfulls.com.Controllers
 {
     //evaluate punk syntax that comes from the front end
-    [Authorize]
+
     [ApiController]
     public class PunkController :ControllerBase
     {

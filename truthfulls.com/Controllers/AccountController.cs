@@ -4,6 +4,8 @@ using System.Security.Claims;
 using truthfulls.com.Models;
 using System.Web;
 using truthfulls.com.Data;
+using System.Threading.Tasks;
+using System.Linq;
 
 
 

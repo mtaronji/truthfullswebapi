@@ -7,7 +7,7 @@ trigger:
 - dev
 
 pool:
-  name: truthfullspool
+  name: windows_agent
 
 resources:
   repositories:

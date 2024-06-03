@@ -104,22 +104,21 @@ namespace truthfulls.com.Services
             List<object> results =  new List<object>();
             if (this.EvalationResults != null && this.PrintedTrees != null)
             {
-                var treedata = this.EvalationResults.Zip(this.PrintedTrees, (eval, print) => new { eval = eval, print = print });
+                var treedata = this.EvalationResults.Zip(this.PrintedTrees, (eval, print) => 
+                {
+                    var idnode = eval as IdentifierNode; if (idnode != null && idnode.Value != null) { eval = idnode.Value; }
+                    return new { eval = eval, print = print };
+                 });
                 foreach (var node in treedata)
                 {
+
                     if(node.eval is IResultTreeNode) 
                     {
                         var resultnode = (IResultTreeNode)node.eval;
                         var result = resultnode.GetResult();
                         if (result != null)
                         {
-                            if(resultnode is IdentifierNode)
-                            {
-                                var idnode = (IdentifierNode)resultnode;
-                                if (idnode.Value == null) { return null; }
-                                else { resultnode = (IResultTreeNode)idnode.Value; result = resultnode.GetResult(); }
-                                    
-                            }
+
                             if (resultnode is QueryNode)
                             {
                                 if (result != null) { results.Add( new { type = "query", results = result, print = node.print}); }
@@ -129,23 +128,34 @@ namespace truthfulls.com.Services
                                 if (result != null) { results.Add(new {type = "data", results = result, print = node.print }); }
                             }
 
-                            else if (resultnode is IdentifierNode)
-                            {
-                                if (result != null) { results.Add(new { type = "data", results = result, print = node.print }); }
-                            }
                             else if (resultnode is NumberNode)
                             {
                                 var numbernode = (NumberNode)resultnode;                             
-                                if (result != null) { results.Add(new { type = "number", results = result, print = $"{node.print} = {numbernode.Value.Value}" }); }
+                                if (result != null) { results.Add(new { type = "number", results = result, print = $"{node.print} = {numbernode.NumberTypeValue.NumberValue}" }); }
                             }
                             else if(resultnode is MatrixNode)
                             {
                                 var matrixnode = (MatrixNode)resultnode;
-                                if (result != null) { results.Add(new { type = "matrix", results = result, print = $"Matrix({matrixnode.matrix.Value.RowCount.ToString()} x {matrixnode.matrix.Value.ColumnCount.ToString()})" }); }
+                                if (result != null) 
+                                { 
+                                    if(matrixnode.matrix.Value is Matrix<double>)
+                                    {
+                                        results.Add(new { type = "matrix", results = result, print = $"Matrix({matrixnode.matrix.Value.RowCount.ToString()} x {matrixnode.matrix.Value.ColumnCount.ToString()})" });
+                                    }
+                                    else if(matrixnode.matrix.Value is Vector<double>)
+                                    {
+                                        results.Add(new { type = "matrix", results = result, print = $"Vector({matrixnode.matrix.Value.Count})" });
+                                    }
+                                    else 
+                                    {
+                                    }
+                                   
+                                }
                             }
                             else
                             {
-
+                              
+                                
                             }
 
                         }                   

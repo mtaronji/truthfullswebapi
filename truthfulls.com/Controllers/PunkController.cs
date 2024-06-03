@@ -48,7 +48,7 @@ namespace truthfulls.com.Controllers
             {
                 return Ok(evaluations);
             }
-            
+           
         }
     }
 

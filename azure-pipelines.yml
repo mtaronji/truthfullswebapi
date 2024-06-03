@@ -16,20 +16,6 @@ resources:
     endpoint: mtaronji
     name: mtaronji/truthfullsUI
     ref: "refs/heads/dev"
-  - repository:  punk
-    type: github
-    endpoint: mtaronji
-    name: mtaronji/punk
-    ref: "refs/heads/dev"
-  pipelines:
-  - pipeline: 9 
-    source: mtaronji.truthfullsUI # UI update
-    branch: dev
-    trigger: true 
-  - pipeline: 16 
-    source: mtaronji.Punk #Punk language pipeline
-    branch: dev
-    trigger: true 
     
 variables:
   solution: '**/*.sln'
@@ -45,7 +31,6 @@ stages:
     steps:
     - checkout: self
     - checkout: ui
-    - checkout: punk
     - task: NuGetToolInstaller@1
       displayName: "Install Nuget"
       
@@ -54,15 +39,6 @@ stages:
       inputs:
         version: '8.x'
         packageType: sdk
-    - script: |
-              cd $(System.DefaultWorkingDirectory)/Punk
-              dotnet build --configuration $(buildConfiguration)
-      displayName: 'Build Punk'
-    - script: |
-              echo $(System.DefaultWorkingDirectory)
-              cd $(System.DefaultWorkingDirectory)/truthfullswebapi
-              dotnet build --configuration $(buildConfiguration)
-      displayName: 'Build Web API'
     - task: CopyFiles@2
       inputs:
         SourceFolder: $(Agent.RootDirectory)/testdata
@@ -72,11 +48,8 @@ stages:
       displayName: "Copying unit test db to the pipeline to run tests"
     - script: |             
                cd $(System.DefaultWorkingDirectory)/truthfullswebapi/truthfulls.com
-               dotnet add truthfulls.com.csproj package Punk
                cd $(System.DefaultWorkingDirectory)/truthfullswebapi/TruthfullsTests
-               dotnet add TruthfullsTests.csproj package Punk
-               dotnet test
-      displayName: 'Install Punk & Test'
+
       
     - task: DotNetCoreCLI@2
       inputs:
@@ -133,6 +106,3 @@ stages:
         targetPath: '$(Build.ArtifactStagingDirectory)' 
         artifactName: 'truthfulls'
       displayName: "Creating webapi Artifact"
-
-
-  

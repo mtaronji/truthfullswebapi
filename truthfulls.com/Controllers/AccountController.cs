@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using truthfulls.com.Models;
 using System.Web;
-using System.Diagnostics.Eventing.Reader;
+using truthfulls.com.Data;
+using System.Threading.Tasks;
+using System.Linq;
+
 
 
 namespace truthfulls.com.Controllers
@@ -11,16 +14,18 @@ namespace truthfulls.com.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private SignInManager<IdentityUser> _signinmanager;
-        private UserManager<IdentityUser> _userManager;
+        private SignInManager<AppUser> _signinmanager;
+        private UserManager<AppUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
+        private UserContext _userContext;
         private string externalcallbackurl;
 
 
-        public AccountController(SignInManager<IdentityUser> signinmanager, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> rolemanager)
+        public AccountController(SignInManager<AppUser> signinmanager, UserManager<AppUser> userManager, RoleManager<IdentityRole> rolemanager, UserContext usercontext)
         {
+            this._userContext = usercontext;
             this._signinmanager = signinmanager;
-            this._userManager = userManager;
+             this._userManager = userManager;
             this._roleManager = rolemanager;
 
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development") { this.externalcallbackurl = "https://localhost:50814/account/externallogincallback"; }
@@ -35,13 +40,13 @@ namespace truthfulls.com.Controllers
         public IActionResult ExternalLogin(string provider, string? redirecturl = null)
         {
 
-            if (redirecturl != null) { redirecturl = HttpUtility.UrlEncode(redirecturl); } 
-            
+            if (redirecturl != null) { redirecturl = HttpUtility.UrlEncode(redirecturl); }
+
             var properties = this._signinmanager.ConfigureExternalAuthenticationProperties(provider, "");
             properties.RedirectUri = $"{this.externalcallbackurl}/{redirecturl}";
 
             return Challenge(properties, provider);
-            
+
         }
 
         [HttpGet]
@@ -57,8 +62,8 @@ namespace truthfulls.com.Controllers
             {
                 returnURL = HttpUtility.UrlDecode(redirecturl);
             }
-            
-                    
+
+
             var info = await this._signinmanager.GetExternalLoginInfoAsync();
             if (info == null)
             {
@@ -66,8 +71,8 @@ namespace truthfulls.com.Controllers
                 return BadRequest(errorModel);
             }
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-            if (email == null) { return RedirectToPage("Error", new { error = "Could not find an email address" }); }
-            
+            if (email == null) { return RedirectToPage("Error", new { error = "Third Party signin Provider ins't sharing your email address. Check Settings in the provider" }); }
+
 
             var user = await this._userManager.FindByEmailAsync(email);
             if (user == null)
@@ -81,17 +86,21 @@ namespace truthfulls.com.Controllers
                     var errorModel = new { error = "Error creating a new User" };
                     return BadRequest(errorModel);
                 }
+                var role = new IdentityRole("user");
+                await _roleManager.CreateAsync(role);
+                await _userManager.AddToRoleAsync(user, "user");
+
                 var claimaddresult = await this._userManager.AddClaimsAsync(user, info.Principal.Claims);
-                if (claimaddresult != IdentityResult.Success) { return BadRequest(new {error = "Error adding claims for user"}); }
+                if (claimaddresult != IdentityResult.Success) { return BadRequest(new { error = "Error adding claims for user" }); }
 
                 var addloginresult = await this._userManager.AddLoginAsync(user, info);
                 if (addloginresult != IdentityResult.Success) { return BadRequest(new { error = "Error adding login for user" }); }
 
             }
-            
+
             //try to sign in with external login info. If it fails, try adding login and signing in again
             //if that fails return bad request
-            var result = await this._signinmanager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            var result = await this._signinmanager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, true);
             if (result == Microsoft.AspNetCore.Identity.SignInResult.Success) { return Redirect(returnURL); }
             else
             {
@@ -101,35 +110,54 @@ namespace truthfulls.com.Controllers
                 if (result == Microsoft.AspNetCore.Identity.SignInResult.Success) { return Redirect(returnURL); }
                 else { return BadRequest(new { error = "Error signing In" }); }
             }
-
-
         }
 
         [HttpGet]
-        [Route("[controller]/isauthenicated")]
-        public async Task<IActionResult> IsAuthenicated()
+        [Route("[controller]/authenicationdetails")]
+        public async Task<IActionResult> AuthenicationDetails()
         {
-            
+
             if (User.Identity == null) { return Unauthorized(); }
 
-            if (User.Identity.IsAuthenticated) 
+            if (User.Identity.IsAuthenticated)
             {
                 var user = await this._userManager.GetUserAsync(User);
                 if (user == null || user.Email == null || user.UserName == null) { return NotFound(); }
                 var rolenames = this._roleManager.Roles.ToList();
-                if(rolenames.Count == 0) { return NotFound(); }
+                if (rolenames.Count == 0) { return NotFound(); }
                 string[] roles = { };
-                foreach(var role in rolenames)
+                foreach (var role in rolenames)
                 {
-                    if(role.Name == null) { return NotFound(); }
+                    if (role.Name == null) { return NotFound(); }
                     if (User.IsInRole(role.Name)) { roles.Append(role.Name); }
                 }
-                return Ok(new LoginVM() { email = user.Email, username = user.UserName, roles = roles});
+                return Ok(new LoginVM() { email = user.Email, username = user.UserName, roles = roles });
             }
             else { return Ok(null); }
 
         }
 
+        [HttpGet]
+        [Route("[controller]/isauthenticated")]
+        public IActionResult IsAuthenticated()
+        {
+            if (User.Identity == null)
+            {
+                return Unauthorized(false);
+            }
+            else
+            {
+                if(User.Identity.IsAuthenticated)
+                {
+                    return Ok(true);
+                }
+                else
+                {
+                    return Unauthorized(false);
+                }
+            }
+
+        }
         [HttpGet]
         [Route("[controller]/externalsignout")]
         public async Task<IActionResult> ExternalSignout()
@@ -138,12 +166,40 @@ namespace truthfulls.com.Controllers
             return Ok();
         }
 
+       
+        [HttpPost]
+        [Route("[controller]/feedback")]
+        public async Task<IActionResult> Feedback([FromBody] string comment)
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null) { return NotFound(); }
+                var user = this._userManager.Users.FirstOrDefault(x => x.Id == userId);
+                if(user == null) { return NotFound(); }
+
+                UserComments usercomment = new UserComments()
+                {
+                    message = comment,
+                    Id = userId,
+                    identityuser = user,
+                    PostTime = DateTime.UtcNow
+                };
+                this._userContext.Add(usercomment);
+                await this._userContext.SaveChangesAsync();
+                return Ok(true);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
         [HttpGet]
         [Route("isuser")]
         public IActionResult IsUser()
-        {           
+        {
             var isUser = User.IsInRole("User");
-            return Ok( new { isuser = isUser });
+            return Ok(new { isuser = isUser });
         }
 
         [HttpGet]

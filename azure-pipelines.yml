@@ -1,0 +1,138 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# id = 10
+trigger:
+- development
+
+pool:
+  name: windows_agent
+
+resources:
+  repositories:
+  - repository:  ui
+    type: github
+    endpoint: mtaronji
+    name: mtaronji/truthfullsUI
+    ref: "refs/heads/dev"
+  - repository:  punk
+    type: github
+    endpoint: mtaronji
+    name: mtaronji/punk
+    ref: "refs/heads/dev"
+  pipelines:
+  - pipeline: 9 
+    source: mtaronji.truthfullsUI # UI update
+    branch: dev
+    trigger: true 
+  - pipeline: 16 
+    source: mtaronji.Punk #Punk language pipeline
+    branch: dev
+    trigger: true 
+    
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+stages:
+
+- stage: BuildStage
+  jobs:
+  - job: Build
+    displayName: "Test and Build Truthfulls Web API"
+    steps:
+    - checkout: self
+    - checkout: ui
+    - checkout: punk
+    - task: NuGetToolInstaller@1
+      displayName: "Install Nuget"
+      
+    - task: UseDotNet@2 
+      displayName: ".Install NET Core 8.x"
+      inputs:
+        version: '8.x'
+        packageType: sdk
+    - script: |
+              cd $(System.DefaultWorkingDirectory)/Punk
+              dotnet build --configuration $(buildConfiguration)
+      displayName: 'Build Punk'
+    - script: |
+              echo $(System.DefaultWorkingDirectory)
+              cd $(System.DefaultWorkingDirectory)/truthfullswebapi
+              dotnet build --configuration $(buildConfiguration)
+      displayName: 'Build Web API'
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: $(Agent.RootDirectory)/testdata
+        Contents: |
+                *.db
+        TargetFolder: $(System.DefaultWorkingDirectory)/truthfullswebapi/TruthfullsTests
+      displayName: "Copying unit test db to the pipeline to run tests"
+    - script: |             
+               cd $(System.DefaultWorkingDirectory)/truthfullswebapi/truthfulls.com
+               dotnet add truthfulls.com.csproj package Punk
+               cd $(System.DefaultWorkingDirectory)/truthfullswebapi/TruthfullsTests
+               dotnet add TruthfullsTests.csproj package Punk
+               dotnet test
+      displayName: 'Install Punk & Test'
+      
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: publish
+        publishWebProjects: True
+        arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        zipAfterPublish: false
+      displayName: "Publishing webapi to artifact staging"
+    # - script: |
+    #           cd $(Build.ArtifactStagingDirectory)/truthfulls.com
+    #           mkdir app_data
+      # displayName: "Creating app_data directory"
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: 20.11.x
+      displayName: "Install node 20.11.x"
+    - script: |
+              cd $(System.DefaultWorkingDirectory)/truthfullsUI
+              npm ci 
+              npm install -g @angular/cli
+      displayName: "Installing npm, angular"
+    - script: |
+              echo $(System.DefaultWorkingDirectory)
+              cd $(System.DefaultWorkingDirectory)/truthfullsUI
+              ng test TruthfullsUI --code-coverage --karma-config karma.conf.ci.js 
+      displayName: "Run UI Tests"
+      
+    - script: |
+              echo $(System.DefaultWorkingDirectory)
+              cd $(System.DefaultWorkingDirectory)/truthfullsUI
+              ng build 
+      displayName: "Build Release UI"
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: $(System.DefaultWorkingDirectory)/truthfullsUI/dist
+        TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com
+      displayName: "Copying Angular build to Artifact staging directory"
+      
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: $(Agent.RootDirectory)/DataContexts
+        TargetFolder: $(Build.ArtifactStagingDirectory)/truthfulls.com/DataContexts
+      displayName: "Copying SQL lite production DB"
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: $(Build.ArtifactStagingDirectory)/truthfulls.com
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/truthfulls.zip
+      displayName: "Archive the File"
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)' 
+        artifactName: 'truthfulls'
+      displayName: "Creating webapi Artifact"
+
+
+  

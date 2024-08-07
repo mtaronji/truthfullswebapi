@@ -128,7 +128,8 @@ app.UseStaticFiles(new StaticFileOptions
 {
     ServeUnknownFileTypes = true,
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "truthfulls-ui")),
-    RequestPath = ""
+    RequestPath = "",
+    
 });
 
 

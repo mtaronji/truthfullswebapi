@@ -9,19 +9,15 @@
   <ItemGroup>
     <Compile Remove="Areas\**" />
     <Compile Remove="obj\**" />
-    <Compile Remove="truthfulls-ui\**" />
     <Content Remove="Areas\**" />
     <Content Remove="obj\**" />
-    <Content Remove="truthfulls-ui\**" />
     <EmbeddedResource Remove="Areas\**" />
     <EmbeddedResource Remove="obj\**" />
-    <EmbeddedResource Remove="truthfulls-ui\**" />
     <None Remove="Areas\**" />
     <None Remove="obj\**" />
-    <None Remove="truthfulls-ui\**" />
     <TypeScriptCompile Remove="Areas\**" />
     <TypeScriptCompile Remove="obj\**" />
-    <TypeScriptCompile Remove="truthfulls-ui\**" />
+	<TypeScriptCompile Remove="truthfulls-ui\**" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MailKit" Version="4.5.0" />
@@ -31,7 +27,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Punk" Version="1.1.38" />
+    <PackageReference Include="Punk" Version="1.1.51" />
     <PackageReference Include="Sep" Version="0.5.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
@@ -57,9 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="DataContexts\FRED.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="DataContexts\SP500.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

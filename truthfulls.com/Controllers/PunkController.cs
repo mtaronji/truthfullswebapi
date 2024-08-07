@@ -2,7 +2,6 @@
 using truthfulls.com.Services;
 using System.Text.Json;
 using System.Net;
-using System.Threading.Tasks;
 
 
 namespace truthfulls.com.Controllers
@@ -27,6 +26,7 @@ namespace truthfulls.com.Controllers
         public async Task<IActionResult> Interpret([FromBody] JsonDocument data)
         {
             PunkReturnResult result;
+            
             this._postParser.Parse(data);
             var syntax = WebUtility.UrlDecode(_postParser.GetSyntax());
             if(syntax == string.Empty) { return BadRequest(new {error = "syntax is missing"}); }

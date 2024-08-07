@@ -55,6 +55,9 @@
     <None Update="DataContexts\FRED.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+	  <None Update="DataContexts\SP500.db">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
   </ItemGroup>
   <!--<ItemGroup>
 		<Content Include="truthfulls-ui\**">

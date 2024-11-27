@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using truthfulls.com.Services;
 using System.Text.Json;
+using Punk;
 using System.Net;
-
 
 namespace truthfulls.com.Controllers
 {
@@ -11,13 +10,10 @@ namespace truthfulls.com.Controllers
     [ApiController]
     public class PunkController :ControllerBase
     {
-        private PunkInterpreter _interpreter;
-        private PunkPostParser _postParser;
 
-        public PunkController(PunkInterpreter Interpreter, PunkPostParser postparser)
+        public PunkController()
         {         
-            this._interpreter = Interpreter;
-            this._postParser = postparser;
+
         }
 
         [HttpPost]
@@ -25,19 +21,23 @@ namespace truthfulls.com.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> Interpret([FromBody] JsonDocument data)
         {
+          
             PunkReturnResult result;
+            var JSONparser = new Punk.JSONDocumentParser();
+            var interpreter = new Punk.Interpreter();
+            JSONparser.Parse(data);
+            var syntax = WebUtility.UrlDecode(JSONparser.GetSyntax());
+            if (syntax == string.Empty) { return BadRequest(new { error = "syntax is missing" }); }
+
             
-            this._postParser.Parse(data);
-            var syntax = WebUtility.UrlDecode(_postParser.GetSyntax());
-            if(syntax == string.Empty) { return BadRequest(new {error = "syntax is missing"}); }
-            var filevectors = _postParser.GetFileVectors();
+            var filevectors = JSONparser.GetFileVectors();
             if (filevectors.Count > 0)
             {
-                result = await _interpreter.InterpretAsync(syntax, filevectors);
+                result = await interpreter.InterpretAsync(syntax, filevectors);
             }
             else
             {
-                result = await _interpreter.InterpretAsync(syntax);
+                result = await interpreter.InterpretAsync(syntax);
             }
             var evaluations = result.GetEvaluationResults();
             if (evaluations == null)
@@ -48,7 +48,7 @@ namespace truthfulls.com.Controllers
             {
                 return Ok(evaluations);
             }
-           
+
         }
     }
 

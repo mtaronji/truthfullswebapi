@@ -6,7 +6,7 @@ using Microsoft.Extensions.FileProviders;
 using System.Text.Json.Serialization;
 using truthfulls.com.Data;
 using truthfulls.com.Models;
-using truthfulls.com.Services;
+
 
 
 
@@ -62,10 +62,6 @@ builder.Services.AddDefaultIdentity<AppUser>(options =>
 })
 .AddRoles<IdentityRole>().AddSignInManager()
 .AddEntityFrameworkStores<UserContext>();
-
-builder.Services.AddScoped<PunkInterpreter>();
-builder.Services.AddScoped<PunkPostParser>();
-
 
 
 builder.Services.AddAuthentication()
